@@ -14,6 +14,7 @@ import org.json.JSONObject;
 public class JSONParser {
     /**
      * getMoviesFromJSON
+     *
      * @param moviesJSONString the JSON string of movies data
      * @return a ContentValues array with the movies records
      */
@@ -90,16 +91,20 @@ public class JSONParser {
                 reviewsContentValues = new ContentValues[reviewsQty];
                 for (int i = 0; i < reviewsQty; i++) {
                     JSONObject reviewRecord = reviewsArray.getJSONObject(i);
-                    String value_review_id = reviewRecord.getString(field_review_id);
-                    String value_review_author = reviewRecord.getString(field_review_author);
-                    String value_review_content = reviewRecord.getString(field_review_content);
-                    String value_review_url = reviewRecord.getString(field_review_url);
-                    ContentValues reviewContentValues = new ContentValues();
-                    reviewContentValues.put(field_review_id, value_review_id);
-                    reviewContentValues.put(field_review_author, value_review_author);
-                    reviewContentValues.put(field_review_content, value_review_content);
-                    reviewContentValues.put(field_review_url, value_review_url);
-                    reviewsContentValues[i] = reviewContentValues;
+                    if (reviewRecord.length() > 0) {
+                        String value_review_id = reviewRecord.getString(field_review_id);
+                        String value_review_author = reviewRecord.getString(field_review_author);
+                        String value_review_content = reviewRecord.getString(field_review_content);
+                        String value_review_url = reviewRecord.getString(field_review_url);
+                        ContentValues reviewContentValues = new ContentValues();
+                        reviewContentValues.put(field_review_id, value_review_id);
+                        reviewContentValues.put(field_review_author, value_review_author);
+                        reviewContentValues.put(field_review_content, value_review_content);
+                        reviewContentValues.put(field_review_url, value_review_url);
+                        reviewsContentValues[i] = reviewContentValues;
+                    } else {
+                        reviewsContentValues[i].put("error", "No reviews");
+                    }
                 }
             }
         } catch (JSONException e) {
