@@ -1,9 +1,6 @@
 package rocks.athrow.android_popular_movies.data;
 
 import android.net.Uri;
-import android.os.Build;
-import android.support.design.BuildConfig;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,11 +9,16 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import rocks.athrow.android_popular_movies.BuildConfig;
+
 /**
  * Created by josel on 8/22/2016.
  */
-public class API {
-    private static final String API_KEY = "";
+public final class API {
+    private API() {
+        throw new AssertionError("No API instances for you!");
+    }
+    private static final String API_KEY = BuildConfig.APIKey;
     private static final String API_KEY_ARG = "&api_key=" + API_KEY;
     private static final String API_DISCOVER_MOVIES_URL = "http://api.themoviedb.org/3/discover/movie?";
     private static final String API_MOVIE_URL = "http://api.themoviedb.org/3/movie/";
@@ -28,7 +30,7 @@ public class API {
      */
     public static String getMoviesFromAPI(){
         String movieRequestURL = API_DISCOVER_MOVIES_URL + "popularity" + API_KEY_ARG;
-        return callAPIString(movieRequestURL);
+        return httpConnect(movieRequestURL);
     }
 
     /**
@@ -38,7 +40,7 @@ public class API {
      */
     public static String getMovieReviewsFromAPI(String movieID){
         String movieRequestURL = API_MOVIE_URL + movieID + "/reviews?" + API_KEY_ARG;
-        return callAPIString(movieRequestURL);
+        return httpConnect(movieRequestURL);
     }
     /**
      * getMovieReviewsFromAPI
@@ -47,7 +49,7 @@ public class API {
      */
     public static String getMovieTrailersFromAPI(String movieID){
         String movieRequestURL = API_MOVIE_URL + movieID + "/videos?" + API_KEY_ARG;
-        return callAPIString(movieRequestURL);
+        return httpConnect(movieRequestURL);
     }
     /**
      * callAPIURL
@@ -55,7 +57,7 @@ public class API {
      * @param movieRequestURL the full moviedb api url
      * @return a sring of json data
      */
-    private static String callAPIString (String movieRequestURL){
+    private static String httpConnect(String movieRequestURL){
         String results = null;
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
