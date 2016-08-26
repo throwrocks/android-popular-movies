@@ -3,14 +3,14 @@ package rocks.athrow.android_popular_movies;
 
 import android.content.ContentValues;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+
+import java.util.Random;
 
 import rocks.athrow.android_popular_movies.data.API;
 import rocks.athrow.android_popular_movies.data.JSONParser;
@@ -22,38 +22,48 @@ import static org.junit.Assert.*;
  */
 @Config(manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
-public class UnitTests extends Robolectric {
+public class UnitTestsAPI extends Robolectric {
     private final static String ID = "id";
     private final static String EMPTY_STRING = "";
-    private String moviesResultJSON;
+    private final static String API_ERROR1 = "error: IOException";
+    private final static String API_ERROR2 = "error: buffer.length() == 0";
+    private final static String API_ERROR3 = "error: inputStream == null";
+    private static String moviesResultJSON;
+    private static ContentValues[] moviesContentValues;
 
-    public String getMoviesResultJSON() {
+    public static String getMoviesResultJSON() {
         return API.getMoviesFromAPI();
     }
 
-    public String getReviewsResultJSON(String movieId) {
+    public static String getReviewsResultJSON(String movieId) {
         return API.getMovieReviewsFromAPI(movieId);
     }
 
-    public String getTrailersResultJSON(String movieId) {
+    public static String getTrailersResultJSON(String movieId) {
         return API.getMovieTrailersFromAPI(movieId);
     }
 
-    public ContentValues[] getMoviesContentValues(String moviesResult) {
+    public static ContentValues[] getMoviesContentValues(String moviesResult) {
         return JSONParser.getMoviesFromJSON(moviesResult);
     }
 
-    public ContentValues[] getReviewsContentValues(String reviewsResult) {
+    public static ContentValues[] getReviewsContentValues(String reviewsResult) {
         return JSONParser.getReviewsFromJSON(reviewsResult);
     }
 
-    public ContentValues[] getTrailersContentValues(String trailersResult) {
+    public static ContentValues[] getTrailersContentValues(String trailersResult) {
         return JSONParser.getTrailersFromJSON(trailersResult);
     }
 
-    @Before
-    public void setUp(){
+    public static int getRandomNumber(int start, int end) {
+        Random r = new Random();
+        return r.nextInt(end - start) + start;
+    }
+
+    @BeforeClass
+    public static void setUp() {
         moviesResultJSON = getMoviesResultJSON();
+        moviesContentValues = getMoviesContentValues(moviesResultJSON);
     }
 
     /**
@@ -76,7 +86,6 @@ public class UnitTests extends Robolectric {
      */
     @Test
     public void testGetMoviesContentValues() throws Exception {
-        ContentValues[] moviesContentValues = getMoviesContentValues(moviesResultJSON);
         assertTrue(moviesContentValues.length > 0);
     }
 
@@ -88,8 +97,7 @@ public class UnitTests extends Robolectric {
      */
     @Test
     public void getMovieIDs() throws Exception {
-        ContentValues[] contentValues = getMoviesContentValues(moviesResultJSON);
-        for (ContentValues item : contentValues) {
+        for (ContentValues item : moviesContentValues) {
             String movieId = item.getAsString(ID);
             assertTrue(movieId != null && !movieId.equals(EMPTY_STRING));
         }
@@ -97,7 +105,7 @@ public class UnitTests extends Robolectric {
 
     /**
      * testGetMoviesReviews
-     * Test calling the API for each movie's reviews
+     * Test calling the API for a random movie's reviews
      * The result should be non-null, non-empty
      * TODO: Check that the JSON result has a results array
      *
@@ -105,24 +113,41 @@ public class UnitTests extends Robolectric {
      */
     @Test
     public void testGetMovieReviews() throws Exception {
-        ContentValues[] contentValues = getMoviesContentValues(moviesResultJSON);
-        for (ContentValues item : contentValues) {
-            String movieId = item.getAsString(ID);
-            String results = getReviewsResultJSON(movieId);
-            assertTrue(results != null);
+        ContentValues item = moviesContentValues[getRandomNumber(1, moviesContentValues.length)];
+        String movieId = item.getAsString(ID);
+        String results = getReviewsResultJSON(movieId);
+        switch (results){
+            case API_ERROR1: assertTrue(false);
+                break;
+            case API_ERROR2: assertTrue(false);
+                break;
+            case API_ERROR3: assertTrue(false);
+                break;
+            default: assertTrue(true);
         }
     }
 
     /**
+     * testGetMovieTrailers
+     * Test calling the API for a random movie's trailers
+     * The result should be non-null, non-empty
+     * TODO: Check that the JSON result has a results array
      *
+     * @throws Exception
      */
     @Test
     public void testGetMovieTrailers() throws Exception {
-        ContentValues[] contentValues = getMoviesContentValues(moviesResultJSON);
-        for (ContentValues item : contentValues) {
-            String movieId = item.getAsString(ID);
-            String results = getTrailersResultJSON(movieId);
-            assertTrue(results != null);
+        ContentValues item = moviesContentValues[getRandomNumber(1, moviesContentValues.length)];
+        String movieId = item.getAsString(ID);
+        String results = getTrailersResultJSON(movieId);
+        switch (results){
+            case API_ERROR1: assertTrue(false);
+                break;
+            case API_ERROR2: assertTrue(false);
+                break;
+            case API_ERROR3: assertTrue(false);
+                break;
+            default: assertTrue(true);
         }
     }
 }

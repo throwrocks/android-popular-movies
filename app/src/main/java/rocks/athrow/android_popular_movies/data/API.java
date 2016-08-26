@@ -74,8 +74,7 @@ public final class API {
             StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 // Nothing to do.
-                results = null;
-                return null;
+                return "error: inputStream == null";
             }
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
@@ -87,11 +86,11 @@ public final class API {
             }
             if (buffer.length() == 0) {
                 // Stream was empty.  No point in parsing.
-                results = null;
+                results = "error: buffer.length() == 0";
             }
             results = buffer.toString();
         } catch (IOException v) {
-            results = null;
+            results = "error: IOException";
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -106,6 +105,5 @@ public final class API {
         }
         return results;
     }
-
 
 }
