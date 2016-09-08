@@ -13,6 +13,7 @@ import org.robolectric.annotation.Config;
 import java.util.Random;
 
 import rocks.athrow.android_popular_movies.data.API;
+import rocks.athrow.android_popular_movies.data.APIResponse;
 import rocks.athrow.android_popular_movies.data.JSONParser;
 
 import static org.junit.Assert.*;
@@ -25,21 +26,21 @@ import static org.junit.Assert.*;
 public class UnitTestsAPI extends Robolectric {
     private final static String ID = "id";
     private final static String EMPTY_STRING = "";
-    private final static String API_ERROR1 = "error: IOException";
-    private final static String API_ERROR2 = "error: buffer.length() == 0";
-    private final static String API_ERROR3 = "error: inputStream == null";
+    private static APIResponse mApiResponse;
     private static String moviesResultJSON;
     private static ContentValues[] moviesContentValues;
 
-    public static String getMoviesResultJSON() {
+    public static APIResponse getMoviesResultJSON() {
         return API.getMoviesFromAPI();
+
     }
 
-    public static String getReviewsResultJSON(String movieId) {
+    public static APIResponse getReviewsResultJSON(String movieId) {
         return API.getMovieReviewsFromAPI(movieId);
+
     }
 
-    public static String getTrailersResultJSON(String movieId) {
+    public static APIResponse getTrailersResultJSON(String movieId) {
         return API.getMovieTrailersFromAPI(movieId);
     }
 
@@ -62,8 +63,11 @@ public class UnitTestsAPI extends Robolectric {
 
     @BeforeClass
     public static void setUp() {
-        moviesResultJSON = getMoviesResultJSON();
-        moviesContentValues = getMoviesContentValues(moviesResultJSON);
+        mApiResponse = getMoviesResultJSON();
+        if (mApiResponse.getResponseCode() == 200) {
+            moviesResultJSON = mApiResponse.getResponseText();
+            moviesContentValues = getMoviesContentValues(moviesResultJSON);
+        }
     }
 
     /**
@@ -115,15 +119,13 @@ public class UnitTestsAPI extends Robolectric {
     public void testGetMovieReviews() throws Exception {
         ContentValues item = moviesContentValues[getRandomNumber(1, moviesContentValues.length)];
         String movieId = item.getAsString(ID);
-        String results = getReviewsResultJSON(movieId);
-        switch (results){
-            case API_ERROR1: assertTrue(false);
+        APIResponse apiResponse = getReviewsResultJSON(movieId);
+        switch (apiResponse.getResponseCode()) {
+            case 200:
+                assertTrue(true);
                 break;
-            case API_ERROR2: assertTrue(false);
-                break;
-            case API_ERROR3: assertTrue(false);
-                break;
-            default: assertTrue(true);
+            default:
+                assertTrue(false);
         }
     }
 
@@ -139,15 +141,13 @@ public class UnitTestsAPI extends Robolectric {
     public void testGetMovieTrailers() throws Exception {
         ContentValues item = moviesContentValues[getRandomNumber(1, moviesContentValues.length)];
         String movieId = item.getAsString(ID);
-        String results = getTrailersResultJSON(movieId);
-        switch (results){
-            case API_ERROR1: assertTrue(false);
+        APIResponse apiResponse = getTrailersResultJSON(movieId);
+        switch (apiResponse.getResponseCode()) {
+            case 200:
+                assertTrue(true);
                 break;
-            case API_ERROR2: assertTrue(false);
-                break;
-            case API_ERROR3: assertTrue(false);
-                break;
-            default: assertTrue(true);
+            default:
+                assertTrue(false);
         }
     }
 }
