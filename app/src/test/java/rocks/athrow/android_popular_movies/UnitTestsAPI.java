@@ -15,6 +15,8 @@ import java.util.Random;
 import rocks.athrow.android_popular_movies.data.API;
 import rocks.athrow.android_popular_movies.data.APIResponse;
 import rocks.athrow.android_popular_movies.data.JSONParser;
+import rocks.athrow.android_popular_movies.data.MovieContract;
+import rocks.athrow.android_popular_movies.data.MoviesProvider;
 
 import static org.junit.Assert.*;
 
