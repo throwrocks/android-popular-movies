@@ -7,7 +7,6 @@ import android.content.Context;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -31,7 +30,6 @@ import static org.junit.Assert.*;
 public class UnitTestsAPI extends Robolectric {
     private final static String ID = "id";
     private final static String EMPTY_STRING = "";
-    private static APIResponse mApiResponse;
     private static String moviesResultJSON;
     private static ContentValues[] moviesContentValues;
 
@@ -68,7 +66,7 @@ public class UnitTestsAPI extends Robolectric {
 
     @BeforeClass
     public static void setUp() {
-        mApiResponse = getMoviesResultJSON();
+        APIResponse mApiResponse = getMoviesResultJSON();
         if (mApiResponse.getResponseCode() == 200) {
             moviesResultJSON = mApiResponse.getResponseText();
             moviesContentValues = getMoviesContentValues(moviesResultJSON);

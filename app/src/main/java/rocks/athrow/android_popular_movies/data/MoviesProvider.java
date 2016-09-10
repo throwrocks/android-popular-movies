@@ -18,6 +18,9 @@ import android.util.Log;
  * Created by josel on 8/23/2016.
  */
 public class MoviesProvider extends ContentProvider {
+    public MoviesProvider() {
+    }
+
     public MoviesProvider(Context mContext) {
         this.mContext = mContext;
     }
@@ -195,13 +198,11 @@ public class MoviesProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
-        // Here's the switch statement that, given a URI, will determine what kind of request it is,
-        // and query the database accordingly.
+        final SQLiteDatabase db = new MovieDBHelper(mContext).getReadableDatabase();
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             case MOVIES: {
-                //Log.e(LOG_TAG, "query -> " + "MOVIES");
-                retCursor = mOpenHelper.getReadableDatabase().query(
+                retCursor = db.query(
                         MovieContract.MovieEntry.MOVIES_TABLE_NAME,
                         projection,
                         selection,
@@ -218,7 +219,7 @@ public class MoviesProvider extends ContentProvider {
             }
             case REVIEWS: {
                 //Log.e(LOG_TAG, "query -> " + "MOVIES");
-                retCursor = mOpenHelper.getReadableDatabase().query(
+                retCursor = db.query(
                         MovieContract.ReviewsEntry.REVIEWS_TABLE_NAME,
                         projection,
                         selection,
@@ -229,7 +230,7 @@ public class MoviesProvider extends ContentProvider {
                 break;
             }
             case TRAILERS: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
+                retCursor = db.query(
                         MovieContract.TrailersEntry.TRAILERS_TABLE_NAME,
                         projection,
                         selection,
@@ -344,18 +345,27 @@ public class MoviesProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case MOVIES:
-                db.beginTransaction();
+                //db.beginTransaction();
                 int returnCount = 0;
-                try {
-                    for (ContentValues value : values) {
-                        long _id = db.insert(MovieContract.MovieEntry.MOVIES_TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            returnCount++;
+                for (ContentValues value : values) {
+                    try {
+                        int id = value.getAsInteger("id");
+                        String table = MovieContract.MovieEntry.MOVIES_TABLE_NAME;
+                        String selection = MovieContract.MovieEntry.movie_id + " = ? ";
+                        String[] selectionArgs = new String[]{Integer.toString(id)};
+                        Cursor cursor = query(MovieContract.MovieEntry.CONTENT_URI, null, selection, selectionArgs, null);
+                        if (cursor == null || cursor.getCount() == 0) {
+                            long _id = db.insert(table, null, value);
+                            db.endTransaction();
+                            if (_id != -1) {
+                                returnCount++;
+                            }
+                        } else {
+                            cursor.close();
                         }
+                    } catch (Exception e) {
+                        System.out.println(e.toString());
                     }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
                 }
                 mContext.getContentResolver().notifyChange(uri, null);
                 return returnCount;

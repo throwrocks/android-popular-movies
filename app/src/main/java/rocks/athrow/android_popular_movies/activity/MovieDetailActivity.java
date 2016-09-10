@@ -1,4 +1,4 @@
-package rocks.athrow.android_popular_movies;
+package rocks.athrow.android_popular_movies.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+
+import rocks.athrow.android_popular_movies.R;
+import rocks.athrow.android_popular_movies.fragment.MovieDetailFragment;
 
 /**
  * An activity representing a single Movie detail screen. This

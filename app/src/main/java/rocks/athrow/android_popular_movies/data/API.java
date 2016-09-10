@@ -55,11 +55,10 @@ public final class API {
      * callAPIURL
      * Use this method to call the API and get the results
      * @param movieRequestURL the full moviedb api url
-     * @return a sring of json data
+     * @return a string of json data
      */
     private static APIResponse httpConnect(String movieRequestURL){
-        APIResponse apiReponse = new APIResponse();
-        String results = null;
+        APIResponse apiResponse = new APIResponse();
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         try {
@@ -70,12 +69,12 @@ public final class API {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
-            apiReponse.setResponseCode(urlConnection.getResponseCode());
+            apiResponse.setResponseCode(urlConnection.getResponseCode());
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
             StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
-                return apiReponse;
+                return apiResponse;
             }
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
@@ -83,12 +82,12 @@ public final class API {
                 buffer.append(line);
             }
             if (buffer.length() == 0) {
-                return apiReponse;
+                return apiResponse;
             }
-            apiReponse.setResponseText(buffer.toString());
+            apiResponse.setResponseText(buffer.toString());
         } catch (IOException v) {
-            apiReponse.setResponseText(v.toString());
-            return apiReponse;
+            apiResponse.setResponseText(v.toString());
+            return apiResponse;
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -101,7 +100,7 @@ public final class API {
                 }
             }
         }
-        return apiReponse;
+        return apiResponse;
     }
 
 }

@@ -1,4 +1,4 @@
-package rocks.athrow.android_popular_movies;
+package rocks.athrow.android_popular_movies.fragment;
 
 import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import rocks.athrow.android_popular_movies.activity.MovieDetailActivity;
+import rocks.athrow.android_popular_movies.activity.MovieListActivity;
+import rocks.athrow.android_popular_movies.R;
 import rocks.athrow.android_popular_movies.dummy.DummyContent;
 
 /**

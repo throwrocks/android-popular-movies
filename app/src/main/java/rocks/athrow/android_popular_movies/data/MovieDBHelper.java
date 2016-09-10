@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class MovieDBHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 11;
     private static final String DATABASE_NAME = "movies.db";
 
     public MovieDBHelper(Context context) {

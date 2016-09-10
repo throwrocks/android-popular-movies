@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import rocks.athrow.android_popular_movies.interfaces.OnTaskComplete;
+
 /**
  * DataHandler
  * A class to manage making calls to query the API, parsing the JSON, and storing the
@@ -11,11 +13,12 @@ import android.os.AsyncTask;
  * Created by josel on 8/23/2016.
  */
 public class FetchTask extends AsyncTask {
-
+    public OnTaskComplete mListener = null;
     private Context mContext;
 
-    public FetchTask(Context mContext) {
+    public FetchTask(Context mContext, OnTaskComplete listener) {
         this.mContext = mContext;
+        this.mListener = listener;
     }
 
     @Override
@@ -33,5 +36,6 @@ public class FetchTask extends AsyncTask {
     @Override
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
+        mListener.OnTaskComplete();
     }
 }
