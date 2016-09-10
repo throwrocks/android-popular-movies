@@ -3,6 +3,7 @@ package rocks.athrow.android_popular_movies.data;
 import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MergeCursor;
@@ -13,13 +14,19 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 /**
+ * MoviesProvider
  * Created by josel on 8/23/2016.
  */
 public class MoviesProvider extends ContentProvider {
+    public MoviesProvider(Context mContext) {
+        this.mContext = mContext;
+    }
+
     private static final String LOG_TAG = "MoviesProvider";
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MovieDBHelper mOpenHelper;
+    private Context mContext;
 
     private static final int MOVIES = 100;
     private static final int MOVIE_ID = 101;
@@ -30,6 +37,7 @@ public class MoviesProvider extends ContentProvider {
     private static final SQLiteQueryBuilder sMoviesQueryBuilder;
     private static final SQLiteQueryBuilder sReviewsQueryBuilder;
     private static final SQLiteQueryBuilder sTrailersQueryBuilder;
+
     // Set the tables for each query builder
     static {
         sMoviesQueryBuilder = new SQLiteQueryBuilder();
@@ -50,24 +58,25 @@ public class MoviesProvider extends ContentProvider {
 
     //sMovieByID build the url to get a movie by id
     private static final String sMovieByID =
-            MovieContract.MovieEntry.MOVIES_TABLE_NAME+
+            MovieContract.MovieEntry.MOVIES_TABLE_NAME +
                     "." + MovieContract.MovieEntry._id + " = ? ";
 
     //sReviewsByID build the url to get movie reviews by id
     private static final String sReviewsByID =
-            MovieContract.ReviewsEntry.REVIEWS_TABLE_NAME+
+            MovieContract.ReviewsEntry.REVIEWS_TABLE_NAME +
                     "." + MovieContract.ReviewsEntry.review_movie_id + " = ? ";
 
     //sTrailersByID build the url to get movie trailers by id
     private static final String sTrailersByID =
-            MovieContract.TrailersEntry.TRAILERS_TABLE_NAME+
+            MovieContract.TrailersEntry.TRAILERS_TABLE_NAME +
                     "." + MovieContract.TrailersEntry.trailer_movie_id + " = ? ";
 
     /**
      * getMoviesByID
-     * @param uri the movie uri
+     *
+     * @param uri        the movie uri
      * @param projection the fields requested
-     * @param sortOrder the order by parameter
+     * @param sortOrder  the order by parameter
      * @return the movie cursor
      */
     private Cursor getMovieByID(Uri uri, String[] projection, String sortOrder) {
@@ -80,7 +89,7 @@ public class MoviesProvider extends ContentProvider {
         //---------------------------------------------------------
         // MOVIE
         //---------------------------------------------------------
-        String id= MovieContract.MovieEntry.getMovieIDFromUI(uri);
+        String id = MovieContract.MovieEntry.getMovieIDFromUI(uri);
         String[] movieSelectionArgs = {id};
         Cursor movieCursor = sMoviesQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
@@ -130,12 +139,13 @@ public class MoviesProvider extends ContentProvider {
         result = new MergeCursor(finalCursor);
         // Return the final cursor
         returnCursor = result;
-        return returnCursor ;
+        return returnCursor;
     }
 
 
     /**
      * buildUriMatcher
+     *
      * @return the uri matching the request
      */
     private static UriMatcher buildUriMatcher() {
@@ -154,7 +164,6 @@ public class MoviesProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        //Log.e(LOG_TAG, "onCreate -> " + true);
         mOpenHelper = new MovieDBHelper(getContext());
         return true;
     }
@@ -165,7 +174,6 @@ public class MoviesProvider extends ContentProvider {
      */
     @Override
     public String getType(Uri uri) {
-        //Log.e(LOG_TAG, "getType -> " + uri);
         // Use the Uri Matcher to determine what kind of URI this is.
         final int match = sUriMatcher.match(uri);
         Log.e(LOG_TAG, "getType -> " + true);
@@ -190,12 +198,8 @@ public class MoviesProvider extends ContentProvider {
         // Here's the switch statement that, given a URI, will determine what kind of request it is,
         // and query the database accordingly.
         Cursor retCursor;
-        //Log.e(LOG_TAG, "query -> " + uri);
-
         switch (sUriMatcher.match(uri)) {
-
-            case MOVIES:
-            {
+            case MOVIES: {
                 //Log.e(LOG_TAG, "query -> " + "MOVIES");
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MovieContract.MovieEntry.MOVIES_TABLE_NAME,
@@ -207,13 +211,12 @@ public class MoviesProvider extends ContentProvider {
                         sortOrder);
                 break;
             }
-            case MOVIE_ID:{
+            case MOVIE_ID: {
                 Log.e(LOG_TAG, "query -> " + uri);
                 retCursor = getMovieByID(uri, projection, sortOrder);
                 break;
             }
-            case REVIEWS:
-            {
+            case REVIEWS: {
                 //Log.e(LOG_TAG, "query -> " + "MOVIES");
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MovieContract.ReviewsEntry.REVIEWS_TABLE_NAME,
@@ -225,9 +228,7 @@ public class MoviesProvider extends ContentProvider {
                         sortOrder);
                 break;
             }
-            case TRAILERS:
-            {
-                //Log.e(LOG_TAG, "query -> " + "MOVIES");
+            case TRAILERS: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MovieContract.TrailersEntry.TRAILERS_TABLE_NAME,
                         projection,
@@ -243,7 +244,7 @@ public class MoviesProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         // This causes the cursor to register a content observer
-        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        retCursor.setNotificationUri(mContext.getContentResolver(), uri);
         return retCursor;
     }
 
@@ -257,22 +258,19 @@ public class MoviesProvider extends ContentProvider {
         Uri returnUri;
 
         switch (match) {
-            case MOVIES:
-            {
+            case MOVIES: {
                 long _id = db.insert(MovieContract.MovieEntry.MOVIES_TABLE_NAME, null, values);
                 if (_id > 0) returnUri = MovieContract.MovieEntry.buildMoviesUri(_id);
                 else throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
-            case REVIEWS:
-            {
+            case REVIEWS: {
                 long _id = db.insert(MovieContract.ReviewsEntry.REVIEWS_TABLE_NAME, null, values);
                 if (_id > 0) returnUri = MovieContract.ReviewsEntry.buildReviewsURI(_id);
                 else throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
-            case TRAILERS:
-            {
+            case TRAILERS: {
                 long _id = db.insert(MovieContract.TrailersEntry.TRAILERS_TABLE_NAME, null, values);
                 if (_id > 0) returnUri = MovieContract.TrailersEntry.buildTrailersUri(_id);
                 else throw new android.database.SQLException("Failed to insert row into " + uri);
@@ -281,7 +279,7 @@ public class MoviesProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        mContext.getContentResolver().notifyChange(uri, null);
         return returnUri;
     }
 
@@ -302,11 +300,10 @@ public class MoviesProvider extends ContentProvider {
         }
         // Because a null deletes all rows
         if (rowsDeleted != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            mContext.getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;
     }
-
 
 
     @Override
@@ -336,22 +333,21 @@ public class MoviesProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (rowsUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            mContext.getContentResolver().notifyChange(uri, null);
         }
         return rowsUpdated;
     }
 
     @Override
     public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final SQLiteDatabase db = new MovieDBHelper(mContext).getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case MOVIES:
                 db.beginTransaction();
                 int returnCount = 0;
                 try {
-                    for (ContentValues value: values) {
-
+                    for (ContentValues value : values) {
                         long _id = db.insert(MovieContract.MovieEntry.MOVIES_TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCount++;
@@ -361,7 +357,7 @@ public class MoviesProvider extends ContentProvider {
                 } finally {
                     db.endTransaction();
                 }
-                getContext().getContentResolver().notifyChange(uri, null);
+                mContext.getContentResolver().notifyChange(uri, null);
                 return returnCount;
             default:
                 return super.bulkInsert(uri, values);
@@ -371,7 +367,8 @@ public class MoviesProvider extends ContentProvider {
     // You do not need to call this method. This is a method specifically to assist the testing
     // framework in running smoothly. You can read more at:
     // http://developer.android.com/reference/android/content/ContentProvider.html#shutdown()
-    @Override@TargetApi(11)
+    @Override
+    @TargetApi(11)
     public void shutdown() {
         mOpenHelper.close();
         super.shutdown();

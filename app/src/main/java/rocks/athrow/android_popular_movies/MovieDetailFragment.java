@@ -63,7 +63,6 @@ public class MovieDetailFragment extends Fragment {
         if (mItem != null) {
             ((TextView) rootView.findViewById(R.id.movie_detail)).setText(mItem.details);
         }
-
         return rootView;
     }
 }

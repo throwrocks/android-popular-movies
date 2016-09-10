@@ -20,7 +20,7 @@ public class MovieContract {
      * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
      * the content provider.
      **/
-    public static final String CONTENT_AUTHORITY = "com.rocks.athr0w.android-popular-movies";
+    public static final String CONTENT_AUTHORITY = "rocks.athrow.android_popular_movies";
     /**
      * The content URI for the top-level authority
      */

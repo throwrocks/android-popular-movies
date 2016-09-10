@@ -2,12 +2,15 @@ package rocks.athrow.android_popular_movies;
 
 
 import android.content.ContentValues;
+import android.content.Context;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Random;
@@ -151,5 +154,18 @@ public class UnitTestsAPI extends Robolectric {
             default:
                 assertTrue(false);
         }
+    }
+
+    /**
+     * testDatabaseBulkInsert
+     * Test a bulk insert into the database
+     * Returns the number of records inserted
+     */
+    @Test
+    public void testDatabaseBulkInsert() {
+        Context context = RuntimeEnvironment.application.getApplicationContext();
+        MoviesProvider moviesProvider = new MoviesProvider(context);
+        int result = moviesProvider.bulkInsert(MovieContract.MovieEntry.CONTENT_URI, moviesContentValues);
+        assertTrue(result > 0);
     }
 }

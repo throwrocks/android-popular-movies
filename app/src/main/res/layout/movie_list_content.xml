@@ -23,6 +23,7 @@
             android:layout_gravity="bottom"
             android:background="#80000000"
             android:gravity="center"
+            android:padding="4dp"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textColor="#FFFFFF" />
     </RelativeLayout>
