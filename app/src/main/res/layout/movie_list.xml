@@ -5,9 +5,7 @@
     android:name="rocks.athrow.android_popular_movies.MovieListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="8dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginTop="8dp"
+    android:clipToPadding="false"
+    android:padding="8dp"
     tools:context="rocks.athrow.android_popular_movies.MovieListActivity"
     tools:listitem="@layout/movie_list_content" />
