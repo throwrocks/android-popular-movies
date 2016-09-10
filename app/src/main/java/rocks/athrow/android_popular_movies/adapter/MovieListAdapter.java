@@ -3,7 +3,6 @@ package rocks.athrow.android_popular_movies.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,9 +13,13 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
+
 import rocks.athrow.android_popular_movies.R;
 import rocks.athrow.android_popular_movies.activity.MovieDetailActivity;
+import rocks.athrow.android_popular_movies.data.MovieContract;
 import rocks.athrow.android_popular_movies.fragment.MovieDetailFragment;
+import rocks.athrow.android_popular_movies.util.Utilities;
 
 /**
  * MovieListAdapter
@@ -24,16 +27,23 @@ import rocks.athrow.android_popular_movies.fragment.MovieDetailFragment;
  */
 public class MovieListAdapter
         extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
-    private static final String mPosterUrl = "http://image.tmdb.org/t/p/w500";
+    private static final String DATE_FORMAT_API = "yyyy-MM-dd";
+    private static final String DATE_FORMAT_DISPLAY = "yyyy";
+    private static final String POSTER_URL = "http://image.tmdb.org/t/p/w500";
     private Context mContext;
     private Boolean mTwoPane;
     private Cursor mValues;
 
+    /**
+     * MovieListAdapter
+     * @param context the application context
+     * @param twoPane equals true when the layout is in two pane mode
+     * @param items a Cursor object containing the movies
+     */
     public MovieListAdapter(Context context, Boolean twoPane, Cursor items) {
         mValues = items;
         mTwoPane = twoPane;
         mContext = context;
-
     }
 
     @Override
@@ -46,11 +56,13 @@ public class MovieListAdapter
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         mValues.moveToPosition(position);
-        String posterPath = mPosterUrl + mValues.getString(6);
+        String posterPath = POSTER_URL + mValues.getString(MovieContract.MovieEntry.movie_poster_path_index);
         Picasso.with(mContext).load(posterPath).into(holder.mPoster);
-        holder.mTitle.setText(mValues.getString(8));
-        holder.mYear.setText(mValues.getString(5));
-
+        holder.mTitle.setText(mValues.getString(MovieContract.MovieEntry.movie_title_index));
+        String releaseDateString = mValues.getString(MovieContract.MovieEntry.movie_poster_release_date_index);
+        Date releaseDate = Utilities.getStringAsDate(releaseDateString, DATE_FORMAT_API, null );
+        String releaseYear = Utilities.getDateAsString(releaseDate, DATE_FORMAT_DISPLAY, null);
+        holder.mYear.setText(releaseYear);
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +78,6 @@ public class MovieListAdapter
                     Context context = v.getContext();
                     Intent intent = new Intent(context, MovieDetailActivity.class);
                     //intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-
                     context.startActivity(intent);
                 }
             }
@@ -83,7 +94,6 @@ public class MovieListAdapter
         public final ImageView mPoster;
         public final TextView mTitle;
         public final TextView mYear;
-        public Cursor mItem;
 
         public ViewHolder(View view) {
             super(view);

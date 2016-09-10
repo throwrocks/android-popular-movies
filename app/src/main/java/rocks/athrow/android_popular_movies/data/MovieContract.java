@@ -6,34 +6,16 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
+ * MovieContract
  * Created by josel on 8/23/2016.
  */
 public class MovieContract {
-    //private static final String LOG_TAG = "MovieContract";
-    /**
-     * The Content Authority of the Movies Provider
-     * <p/>
-     * The "Content authority" is a name for the entire content provider, similar to the
-     * relationship between a domain name and its website.  A convenient string to use for the
-     * content authority is the package name for the app, which is guaranteed to be unique on the
-     * device.
-     * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
-     * the content provider.
-     **/
     public static final String CONTENT_AUTHORITY = "rocks.athrow.android_popular_movies";
-    /**
-     * The content URI for the top-level authority
-     */
+
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-    /**
-     * The path to the Movies database
-     */
     public static final String PATH_MOVIES = "movies";
-    // The path to the movies table
     private static final String PATH_MOVIE_ID = "movie/";
-    // The path to the reviews table
     public static final String PATH_REVIEWS = "reviews";
-    // The path to the reviews table
     public static final String PATH_TRAILERS = "trailers";
 
     /**
@@ -53,9 +35,7 @@ public class MovieContract {
 
         // The internal id is used by all tables
         public static final String _id = "_id";
-        //movies table
         public static final String MOVIES_TABLE_NAME = "movies";
-
         public static final String movie_id = "id";
         public static final String movie_original_language = "original_language";
         public static final String movie_original_title = "original_title";
@@ -68,7 +48,11 @@ public class MovieContract {
         public static final String movie_vote_average = "vote_average";
         public static final String movie_vote_count = "vote_count";
         public static final String movie_is_favorite = "is_favorite";
-        public static final String db_table = "db_table";
+        // The index of all the fields
+        public static final int movie_poster_release_date_index = 5;
+        public static final int movie_poster_path_index = 6;
+        public static final int movie_title_index = 8;
+
         public static Uri buildMoviesUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
@@ -99,7 +83,6 @@ public class MovieContract {
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_REVIEWS;
 
-        // Reviews table
         public static final String _id = "_id";
         public static final String REVIEWS_TABLE_NAME = "reviews";
         public static final String review_id = "id";
@@ -107,7 +90,6 @@ public class MovieContract {
         public static final String review_author = "author";
         public static final String review_content = "content";
         public static final String review_url = "url";
-        public static final String db_table = "db_table";
 
         public static Uri buildReviewsURI(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -126,7 +108,6 @@ public class MovieContract {
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TRAILERS;
 
-        // Reviews table
         public static final String _id = "_id";
         public static final String TRAILERS_TABLE_NAME = "trailers";
         public static final String trailer_id = "id";
@@ -137,8 +118,6 @@ public class MovieContract {
         public static final String trailer_site = "site";
         public static final String trailer_size = "size";
         public static final String trailer_type = "type";
-        public static final String db_table = "db_table";
-
 
         public static Uri buildTrailersUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

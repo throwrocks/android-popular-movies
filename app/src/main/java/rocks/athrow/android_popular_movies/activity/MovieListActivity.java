@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -60,18 +61,26 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
         View recyclerView = findViewById(R.id.movie_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
-        ((RecyclerView) recyclerView).setLayoutManager(new GridLayoutManager(this, 2));
+        int numberOfColumns;
+        if ( mTwoPane ){
+            numberOfColumns = 1;
+        }else{
+            numberOfColumns = 2;
+        }
+        ((RecyclerView) recyclerView).setLayoutManager(new GridLayoutManager(this, numberOfColumns));
         ItemOffsetDecoration itemDecoration = new ItemOffsetDecoration(getApplicationContext(), R.dimen.item_offset);
         ((RecyclerView) recyclerView).addItemDecoration(itemDecoration);
-        if (findViewById(R.id.movie_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
+
         setupRecyclerView((RecyclerView) recyclerView);
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (getResources().getConfiguration().orientation == 2) {
+            mTwoPane = true;
+        }
     }
 
     @Override

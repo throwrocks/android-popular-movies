@@ -2,14 +2,13 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#212121"
     android:orientation="horizontal">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary">
+        android:background="@color/background"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/movie_poster"
@@ -18,28 +17,28 @@
             android:scaleType="centerCrop" />
 
         <LinearLayout
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#90000000"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/movie_title"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:padding="4dp"
-                android:textAppearance="?attr/textAppearanceListItem"
                 android:textColor="#FFFFFF" />
 
             <TextView
                 android:id="@+id/movie_year"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:padding="4dp"
-                android:textAppearance="?attr/textAppearanceListItem"
-                android:textColor="#FFFFFF" />
+                android:paddingTop="8dp"
+                android:textColor="@color/textGray" />
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>
