@@ -23,6 +23,7 @@ public class MoviesProvider extends ContentProvider {
 
     public MoviesProvider(Context mContext) {
         this.mContext = mContext;
+        this.mOpenHelper = new MovieDBHelper(mContext);
     }
 
     private static final String LOG_TAG = "MoviesProvider";
@@ -164,10 +165,8 @@ public class MoviesProvider extends ContentProvider {
         return matcher;
     }
 
-
     @Override
     public boolean onCreate() {
-        mOpenHelper = new MovieDBHelper(getContext());
         return true;
     }
 
@@ -176,7 +175,7 @@ public class MoviesProvider extends ContentProvider {
         test this by uncommenting testGetType in TestProvider.
      */
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         // Use the Uri Matcher to determine what kind of URI this is.
         final int match = sUriMatcher.match(uri);
         Log.e(LOG_TAG, "getType -> " + true);
@@ -196,7 +195,7 @@ public class MoviesProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
         final SQLiteDatabase db = new MovieDBHelper(mContext).getReadableDatabase();
         Cursor retCursor;
@@ -253,8 +252,8 @@ public class MoviesProvider extends ContentProvider {
         Student: Add the ability to insert Locations to the implementation of this function.
      */
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
 
@@ -281,11 +280,12 @@ public class MoviesProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         mContext.getContentResolver().notifyChange(uri, null);
+        db.close();
         return returnUri;
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsDeleted;
@@ -309,7 +309,7 @@ public class MoviesProvider extends ContentProvider {
 
     @Override
     public int update(
-            Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+            @NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsUpdated;
@@ -340,27 +340,24 @@ public class MoviesProvider extends ContentProvider {
     }
 
     @Override
-    public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
-        final SQLiteDatabase db = new MovieDBHelper(mContext).getWritableDatabase();
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+        //final SQLiteDatabase db = new MovieDBHelper(mContext).getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case MOVIES:
-                //db.beginTransaction();
                 int returnCount = 0;
                 for (ContentValues value : values) {
                     try {
                         int id = value.getAsInteger("id");
-                        String table = MovieContract.MovieEntry.MOVIES_TABLE_NAME;
                         String selection = MovieContract.MovieEntry.movie_id + " = ? ";
                         String[] selectionArgs = new String[]{Integer.toString(id)};
-                        Cursor cursor = query(MovieContract.MovieEntry.CONTENT_URI, null, selection, selectionArgs, null);
-                        if (cursor == null || cursor.getCount() == 0) {
-                            long _id = db.insert(table, null, value);
-                            db.endTransaction();
+                        Cursor cursor = query(uri, null, selection, selectionArgs, null);
+                        if (cursor != null && cursor.getCount() == 0) {
+                            Uri insertResult = insert(MovieContract.MovieEntry.CONTENT_URI, value);
+                            long _id = Long.parseLong(MovieContract.MovieEntry.getMovieIDFromUI(insertResult));
                             if (_id != -1) {
                                 returnCount++;
                             }
-                        } else {
                             cursor.close();
                         }
                     } catch (Exception e) {

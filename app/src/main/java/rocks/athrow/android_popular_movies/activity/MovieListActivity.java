@@ -12,11 +12,10 @@ import android.view.View;
 import com.facebook.stetho.Stetho;
 
 import rocks.athrow.android_popular_movies.R;
-import rocks.athrow.android_popular_movies.adapter.MovieListDummyAdapter;
+import rocks.athrow.android_popular_movies.adapter.MovieListAdapter;
 import rocks.athrow.android_popular_movies.data.FetchTask;
 import rocks.athrow.android_popular_movies.data.MovieContract;
 import rocks.athrow.android_popular_movies.data.MoviesProvider;
-import rocks.athrow.android_popular_movies.dummy.DummyContent;
 import rocks.athrow.android_popular_movies.interfaces.OnTaskComplete;
 import rocks.athrow.android_popular_movies.util.ItemOffsetDecoration;
 
@@ -31,7 +30,7 @@ import rocks.athrow.android_popular_movies.util.ItemOffsetDecoration;
 public class MovieListActivity extends AppCompatActivity implements OnTaskComplete{
 
     private Cursor mMovies;
-    private MovieListDummyAdapter mAdapter;
+    private MovieListAdapter mAdapter;
     private boolean mTwoPane;
 
 
@@ -49,7 +48,7 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        mAdapter = new MovieListDummyAdapter(getApplicationContext(), mTwoPane, mMovies);
+        mAdapter = new MovieListAdapter(getApplicationContext(), mTwoPane, mMovies);
         recyclerView.setAdapter(mAdapter);
     }
 
