@@ -1,9 +1,12 @@
 package rocks.athrow.android_popular_movies.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,22 +59,26 @@ public class MovieListAdapter
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         mValues.moveToPosition(position);
+        // Get the movie variables
         String posterPath = POSTER_URL + mValues.getString(MovieContract.MovieEntry.movie_poster_path_index);
-        Picasso.with(mContext).load(posterPath).into(holder.mPoster);
-        holder.mTitle.setText(mValues.getString(MovieContract.MovieEntry.movie_title_index));
+        final String title = mValues.getString(MovieContract.MovieEntry.movie_title_index);
         String releaseDateString = mValues.getString(MovieContract.MovieEntry.movie_poster_release_date_index);
         Date releaseDate = Utilities.getStringAsDate(releaseDateString, DATE_FORMAT_API, null );
         String releaseYear = Utilities.getDateAsString(releaseDate, DATE_FORMAT_DISPLAY, null);
+        // Set the movie views
+        Picasso.with(mContext).load(posterPath).into(holder.mPoster);
+        holder.mTitle.setText(title);
         holder.mYear.setText(releaseYear);
+        // Set the click listener
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    //arguments.putString(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                    arguments.putString(MovieDetailFragment.ARG_ITEM_ID, title);
                     MovieDetailFragment fragment = new MovieDetailFragment();
                     fragment.setArguments(arguments);
-                    fragment.getActivity().getSupportFragmentManager().beginTransaction()
+                    ((Activity)mContext).getFragmentManager().beginTransaction()
                             .replace(R.id.movie_detail_container, fragment)
                             .commit();
                 } else {

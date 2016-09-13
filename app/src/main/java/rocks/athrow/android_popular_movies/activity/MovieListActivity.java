@@ -49,7 +49,7 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        mAdapter = new MovieListAdapter(getApplicationContext(), mTwoPane, mMovies);
+        mAdapter = new MovieListAdapter(this, mTwoPane, mMovies);
         recyclerView.setAdapter(mAdapter);
     }
 

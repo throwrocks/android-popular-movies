@@ -60,7 +60,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                     getIntent().getStringExtra(MovieDetailFragment.ARG_ITEM_ID));
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .add(R.id.movie_detail_container, fragment)
                     .commit();
         }

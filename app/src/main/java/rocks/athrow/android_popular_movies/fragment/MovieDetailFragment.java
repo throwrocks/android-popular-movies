@@ -3,7 +3,7 @@ package rocks.athrow.android_popular_movies.fragment;
 import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +25,7 @@ public class MovieDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
-
-    /**
-     * The dummy content this fragment is presenting.
-     */
-    //private DummyContent.DummyItem mItem;
+    public static final String ARG_TITLE = "title";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
