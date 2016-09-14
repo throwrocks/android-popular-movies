@@ -60,6 +60,7 @@ public class MovieListAdapter
     public void onBindViewHolder(final ViewHolder holder, int position) {
         mValues.moveToPosition(position);
         // Get the movie variables
+        final int id = mValues.getInt(MovieContract.MovieEntry.movie_id_index);
         String posterPath = POSTER_URL + mValues.getString(MovieContract.MovieEntry.movie_poster_path_index);
         final String title = mValues.getString(MovieContract.MovieEntry.movie_title_index);
         String releaseDateString = mValues.getString(MovieContract.MovieEntry.movie_poster_release_date_index);
@@ -75,7 +76,8 @@ public class MovieListAdapter
             public void onClick(View v) {
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(MovieDetailFragment.ARG_ITEM_ID, title);
+                    arguments.putInt(MovieDetailFragment.ARG_ID, id);
+                    arguments.putString(MovieDetailFragment.ARG_TITLE, title);
                     MovieDetailFragment fragment = new MovieDetailFragment();
                     fragment.setArguments(arguments);
                     ((Activity)mContext).getFragmentManager().beginTransaction()
