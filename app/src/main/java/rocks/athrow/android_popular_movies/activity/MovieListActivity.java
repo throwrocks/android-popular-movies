@@ -42,7 +42,7 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
         OnTaskComplete onTaskCompleted = this;
-        FetchTask fetchTask = new FetchTask(getApplicationContext(), onTaskCompleted);
+        FetchTask fetchTask = new FetchTask(onTaskCompleted);
         fetchTask.execute();
     }
 

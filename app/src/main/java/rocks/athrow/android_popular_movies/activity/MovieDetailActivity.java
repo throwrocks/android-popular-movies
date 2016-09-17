@@ -3,6 +3,7 @@ package rocks.athrow.android_popular_movies.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -50,12 +51,33 @@ public class MovieDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         Activity activity = this;
-        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-        if (appBarLayout != null) {
-            ImageView posterView = (ImageView) findViewById(R.id.detail_poster);
-            String posterPath = arguments.getString(MovieDetailFragment.ARG_POSTER_PATH);
-            Picasso.with(activity).load(posterPath).fit().into(posterView);
-        }
+        final CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+        toolbarLayout.setTitle(" ");
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    toolbarLayout.setTitle(getString(R.string.title_movie_detail));
+                    isShow = true;
+                } else if (isShow) {
+                    toolbarLayout.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        });
+
+
+        ImageView posterView = (ImageView) findViewById(R.id.detail_poster);
+        String posterPath = arguments.getString(MovieDetailFragment.ARG_POSTER_PATH);
+        Picasso.with(activity).load(posterPath).fit().into(posterView);
+
         if (savedInstanceState == null) {
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);

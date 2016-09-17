@@ -2,11 +2,9 @@ package rocks.athrow.android_popular_movies.data;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 
 import rocks.athrow.android_popular_movies.interfaces.OnTaskComplete;
-import rocks.athrow.android_popular_movies.service.UpdateDBService;
 
 /**
  * DataHandler
@@ -16,10 +14,8 @@ import rocks.athrow.android_popular_movies.service.UpdateDBService;
  */
 public class FetchTask extends AsyncTask<String, Void, ContentValues[]> {
     public OnTaskComplete mListener = null;
-    private Context mContext;
 
-    public FetchTask(Context mContext, OnTaskComplete listener) {
-        this.mContext = mContext;
+    public FetchTask(OnTaskComplete listener) {
         this.mListener = listener;
     }
 

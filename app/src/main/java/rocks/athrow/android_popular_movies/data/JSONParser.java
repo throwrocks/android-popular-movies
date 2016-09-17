@@ -20,17 +20,6 @@ public class JSONParser {
      */
     public static ContentValues[] getMoviesFromJSON(String moviesJSONString) {
         final String mdb_list = "results";
-        final String field_movie_id = "id";
-        final String field_movie_original_language = "original_language";
-        final String field_movie_original_title = "original_title";
-        final String field_movie_overview = "overview";
-        final String field_movie_release_date = "release_date";
-        final String field_movie_poster_path = "poster_path";
-        final String field_movie_popularity = "popularity";
-        final String field_movie_title = "title";
-        final String field_movie_video = "video";
-        final String field_movie_vote_average = "vote_average";
-        final String field_movie_vote_count = "vote_count";
         ContentValues[] moviesContentValues = null;
         try {
             JSONObject moviesJson = new JSONObject(moviesJSONString);
@@ -39,29 +28,29 @@ public class JSONParser {
             moviesContentValues = new ContentValues[moviesQty];
             for (int i = 0; i < moviesQty; i++) {
                 JSONObject movieRecord = moviesArray.getJSONObject(i);
-                int value_movie_id = movieRecord.getInt(field_movie_id);
-                String value_movie_original_language = movieRecord.getString(field_movie_original_language);
-                String value_movie_original_title = movieRecord.getString(field_movie_original_title);
-                String value_movie_overview = movieRecord.getString(field_movie_overview);
-                String value_movie_release_date = movieRecord.getString(field_movie_release_date);
-                String value_movie_poster_path = movieRecord.getString(field_movie_poster_path);
-                Double value_movie_popularity = Double.parseDouble(movieRecord.getString(field_movie_popularity));
-                String value_movie_title = movieRecord.getString(field_movie_title);
-                String value_movie_video = movieRecord.getString(field_movie_video);
-                Double value_movie_vote_average = Double.parseDouble(movieRecord.getString(field_movie_vote_average));
-                String value_movie_vote_count = movieRecord.getString(field_movie_vote_count);
+                int value_movie_id = movieRecord.getInt(MovieContract.MovieEntry.movie_id);
+                String value_movie_original_language = movieRecord.getString(MovieContract.MovieEntry.movie_original_language);
+                String value_movie_original_title = movieRecord.getString(MovieContract.MovieEntry.movie_original_title);
+                String value_movie_overview = movieRecord.getString(MovieContract.MovieEntry.movie_overview);
+                String value_movie_release_date = movieRecord.getString(MovieContract.MovieEntry.movie_release_date);
+                String value_movie_poster_path = movieRecord.getString(MovieContract.MovieEntry.movie_poster_path);
+                Double value_movie_popularity = Double.parseDouble(movieRecord.getString(MovieContract.MovieEntry.movie_popularity));
+                String value_movie_title = movieRecord.getString(MovieContract.MovieEntry.movie_title);
+                String value_movie_video = movieRecord.getString(MovieContract.MovieEntry.movie_video);
+                Double value_movie_vote_average = Double.parseDouble(movieRecord.getString(MovieContract.MovieEntry.movie_vote_average));
+                String value_movie_vote_count = movieRecord.getString(MovieContract.MovieEntry.movie_vote_count);
                 ContentValues movieContentValues = new ContentValues();
-                movieContentValues.put(field_movie_id, value_movie_id);
-                movieContentValues.put(field_movie_original_language, value_movie_original_language);
-                movieContentValues.put(field_movie_original_title, value_movie_original_title);
-                movieContentValues.put(field_movie_overview, value_movie_overview);
-                movieContentValues.put(field_movie_release_date, value_movie_release_date);
-                movieContentValues.put(field_movie_poster_path, value_movie_poster_path);
-                movieContentValues.put(field_movie_popularity, value_movie_popularity);
-                movieContentValues.put(field_movie_title, value_movie_title);
-                movieContentValues.put(field_movie_video, value_movie_video);
-                movieContentValues.put(field_movie_vote_average, value_movie_vote_average);
-                movieContentValues.put(field_movie_vote_count, value_movie_vote_count);
+                movieContentValues.put(MovieContract.MovieEntry.movie_id, value_movie_id);
+                movieContentValues.put(MovieContract.MovieEntry.movie_original_language, value_movie_original_language);
+                movieContentValues.put(MovieContract.MovieEntry.movie_original_title, value_movie_original_title);
+                movieContentValues.put(MovieContract.MovieEntry.movie_overview, value_movie_overview);
+                movieContentValues.put(MovieContract.MovieEntry.movie_release_date, value_movie_release_date);
+                movieContentValues.put(MovieContract.MovieEntry.movie_poster_path, value_movie_poster_path);
+                movieContentValues.put(MovieContract.MovieEntry.movie_popularity, value_movie_popularity);
+                movieContentValues.put(MovieContract.MovieEntry.movie_title, value_movie_title);
+                movieContentValues.put(MovieContract.MovieEntry.movie_video, value_movie_video);
+                movieContentValues.put(MovieContract.MovieEntry.movie_vote_average, value_movie_vote_average);
+                movieContentValues.put(MovieContract.MovieEntry.movie_vote_count, value_movie_vote_count);
                 moviesContentValues[i] = movieContentValues;
             }
         } catch (JSONException e) {
