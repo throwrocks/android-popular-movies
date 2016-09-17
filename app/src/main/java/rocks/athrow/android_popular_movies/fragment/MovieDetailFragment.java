@@ -7,8 +7,11 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import rocks.athrow.android_popular_movies.activity.MovieDetailActivity;
 import rocks.athrow.android_popular_movies.activity.MovieListActivity;
@@ -27,6 +30,7 @@ public class MovieDetailFragment extends Fragment {
     public static final String ARG_RELEASE_YEAR = "release_year";
     public static final String ARG_OVERVIEW = "overview";
     public static final String ARG_VOTE_COUNT = "vote_count";
+    public static final String ARG_POSTER_PATH = "poster_path";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -38,16 +42,6 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments().containsKey(ARG_ID)) {
-            String title = getArguments().getString(ARG_TITLE);
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(title);
-            }
-        }
     }
 
     @Override
@@ -59,8 +53,7 @@ public class MovieDetailFragment extends Fragment {
         String releaseYear = arguments.getString(ARG_RELEASE_YEAR);
         String overview = arguments.getString(ARG_OVERVIEW);
         String voteCount = arguments.getString(ARG_VOTE_COUNT);
-        // Show the dummy content as text in a TextView.
-        //if (mItem != null) {
+
         ((TextView) rootView.findViewById(R.id.detail_title)).setText(title);
         ((TextView) rootView.findViewById(R.id.detail_release_year)).setText(releaseYear);
         ((TextView) rootView.findViewById(R.id.detail_overview)).setText(overview);

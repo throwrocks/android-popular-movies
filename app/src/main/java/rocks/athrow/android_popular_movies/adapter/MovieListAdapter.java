@@ -59,7 +59,7 @@ public class MovieListAdapter
         mValues.moveToPosition(position);
         // Get the movie variables
         final int id = mValues.getInt(MovieContract.MovieEntry.movie_id_index);
-        String posterPath = POSTER_URL + mValues.getString(MovieContract.MovieEntry.movie_poster_path_index);
+        final String posterPath = POSTER_URL + mValues.getString(MovieContract.MovieEntry.movie_poster_path_index);
         final String title = mValues.getString(MovieContract.MovieEntry.movie_title_index);
         String releaseDateString = mValues.getString(MovieContract.MovieEntry.movie_poster_release_date_index);
         Date releaseDate = Utilities.getStringAsDate(releaseDateString, DATE_FORMAT_API, null );
@@ -74,13 +74,14 @@ public class MovieListAdapter
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle arguments = new Bundle();
+                arguments.putInt(MovieDetailFragment.ARG_ID, id);
+                arguments.putString(MovieDetailFragment.ARG_TITLE, title);
+                arguments.putString(MovieDetailFragment.ARG_RELEASE_YEAR, releaseYear);
+                arguments.putString(MovieDetailFragment.ARG_OVERVIEW,overview);
+                arguments.putString(MovieDetailFragment.ARG_VOTE_COUNT, voteCount);
+                arguments.putString(MovieDetailFragment.ARG_POSTER_PATH, posterPath);
                 if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putInt(MovieDetailFragment.ARG_ID, id);
-                    arguments.putString(MovieDetailFragment.ARG_TITLE, title);
-                    arguments.putString(MovieDetailFragment.ARG_RELEASE_YEAR, releaseYear);
-                    arguments.putString(MovieDetailFragment.ARG_OVERVIEW,overview);
-                    arguments.putString(MovieDetailFragment.ARG_VOTE_COUNT, voteCount);
                     MovieDetailFragment fragment = new MovieDetailFragment();
                     fragment.setArguments(arguments);
                     ((Activity)mContext).getFragmentManager().beginTransaction()
@@ -89,7 +90,7 @@ public class MovieListAdapter
                 } else {
                     Context context = v.getContext();
                     Intent intent = new Intent(context, MovieDetailActivity.class);
-                    //intent.putExtra(MovieDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                    intent.putExtras(arguments);
                     context.startActivity(intent);
                 }
             }
