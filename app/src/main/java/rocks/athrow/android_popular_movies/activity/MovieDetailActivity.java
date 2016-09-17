@@ -73,10 +73,9 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
 
-
         ImageView posterView = (ImageView) findViewById(R.id.detail_poster);
         String posterPath = arguments.getString(MovieDetailFragment.ARG_POSTER_PATH);
-        Picasso.with(activity).load(posterPath).fit().into(posterView);
+        Picasso.with(activity).load(posterPath).into(posterView);
 
         if (savedInstanceState == null) {
             MovieDetailFragment fragment = new MovieDetailFragment();

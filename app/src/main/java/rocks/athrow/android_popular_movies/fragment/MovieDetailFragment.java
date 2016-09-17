@@ -7,11 +7,8 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import rocks.athrow.android_popular_movies.activity.MovieDetailActivity;
 import rocks.athrow.android_popular_movies.activity.MovieListActivity;
@@ -53,13 +50,11 @@ public class MovieDetailFragment extends Fragment {
         String releaseYear = arguments.getString(ARG_RELEASE_YEAR);
         String overview = arguments.getString(ARG_OVERVIEW);
         String voteCount = arguments.getString(ARG_VOTE_COUNT);
-
         ((TextView) rootView.findViewById(R.id.detail_title)).setText(title);
         ((TextView) rootView.findViewById(R.id.detail_release_year)).setText(releaseYear);
         ((TextView) rootView.findViewById(R.id.detail_overview)).setText(overview);
         RatingBar ratingBar = (RatingBar) rootView.findViewById(R.id.detail_rating_bar);
         ratingBar.setRating(Float.parseFloat(voteCount));
-        //}
         return rootView;
     }
 }

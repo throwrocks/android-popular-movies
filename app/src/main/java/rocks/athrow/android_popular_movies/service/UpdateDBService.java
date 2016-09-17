@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
+
 import rocks.athrow.android_popular_movies.activity.MovieListActivity;
 import rocks.athrow.android_popular_movies.data.MovieContract;
 import rocks.athrow.android_popular_movies.data.MoviesProvider;
@@ -29,17 +30,18 @@ public class UpdateDBService extends IntentService {
             ContentValues[] moviesContentValues = new ContentValues[size];
             int i = 0;
             while (i < size) {
-                int value_movie_id = Integer.parseInt(((ContentValues) moviesParcelable[i]).get(MovieContract.MovieEntry.movie_id).toString());
-                String value_movie_original_language = ((ContentValues) moviesParcelable[i]).get(MovieContract.MovieEntry.movie_original_language).toString();
-                String value_movie_original_title = ((ContentValues) moviesParcelable[i]).get(MovieContract.MovieEntry.movie_original_title).toString();
-                String value_movie_overview = ((ContentValues) moviesParcelable[i]).get(MovieContract.MovieEntry.movie_overview).toString();
-                String value_movie_release_date =((ContentValues) moviesParcelable[i]).get(MovieContract.MovieEntry.movie_release_date).toString();
-                String value_movie_poster_path = ((ContentValues) moviesParcelable[i]).get(MovieContract.MovieEntry.movie_poster_path).toString();
-                Double value_movie_popularity = Double.parseDouble(((ContentValues) moviesParcelable[i]).get(MovieContract.MovieEntry.movie_popularity).toString());
-                String value_movie_title = ((ContentValues) moviesParcelable[i]).get(MovieContract.MovieEntry.movie_title).toString();
-                String value_movie_video = ((ContentValues) moviesParcelable[i]).get(MovieContract.MovieEntry.movie_video).toString();
-                Double value_movie_vote_average = Double.parseDouble(((ContentValues) moviesParcelable[i]).get(MovieContract.MovieEntry.movie_vote_average).toString());
-                String value_movie_vote_count = ((ContentValues) moviesParcelable[i]).get(MovieContract.MovieEntry.movie_vote_count).toString();
+                ContentValues movieRecord = (ContentValues) moviesParcelable[i];
+                int value_movie_id = Integer.parseInt((movieRecord).get(MovieContract.MovieEntry.movie_id).toString());
+                String value_movie_original_language = (movieRecord).get(MovieContract.MovieEntry.movie_original_language).toString();
+                String value_movie_original_title = (movieRecord).get(MovieContract.MovieEntry.movie_original_title).toString();
+                String value_movie_overview = (movieRecord).get(MovieContract.MovieEntry.movie_overview).toString();
+                String value_movie_release_date = (movieRecord).get(MovieContract.MovieEntry.movie_release_date).toString();
+                String value_movie_poster_path = (movieRecord).get(MovieContract.MovieEntry.movie_poster_path).toString();
+                Double value_movie_popularity = Double.parseDouble((movieRecord).get(MovieContract.MovieEntry.movie_popularity).toString());
+                String value_movie_title = (movieRecord).get(MovieContract.MovieEntry.movie_title).toString();
+                String value_movie_video = (movieRecord).get(MovieContract.MovieEntry.movie_video).toString();
+                Double value_movie_vote_average = Double.parseDouble((movieRecord).get(MovieContract.MovieEntry.movie_vote_average).toString());
+                String value_movie_vote_count = (movieRecord).get(MovieContract.MovieEntry.movie_vote_count).toString();
                 ContentValues movieContentValues = new ContentValues();
                 movieContentValues.put(MovieContract.MovieEntry.movie_id, value_movie_id);
                 movieContentValues.put(MovieContract.MovieEntry.movie_original_language, value_movie_original_language);
