@@ -14,11 +14,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
 
 import rocks.athrow.android_popular_movies.R;
 import rocks.athrow.android_popular_movies.adapter.MovieListAdapter;
+import rocks.athrow.android_popular_movies.data.API;
+import rocks.athrow.android_popular_movies.data.APIResponse;
 import rocks.athrow.android_popular_movies.data.FetchTask;
 import rocks.athrow.android_popular_movies.data.MovieContract;
 import rocks.athrow.android_popular_movies.data.MoviesProvider;
@@ -50,16 +53,24 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
      * This method handles getting the ContentValues from the FetchTask
      * And passing them to the UpdateDBService
      *
-     * @param moviesContentValues the movies returned from the API
+     * @param apiResponse the movies returned from the API
      */
-    public void onTaskComplete(ContentValues[] moviesContentValues) {
-        if (moviesContentValues != null) {
+    public void onTaskComplete(APIResponse apiResponse) {
+        if (apiResponse != null) {
             Intent updateDBIntent = new Intent(this, UpdateDBService.class);
-            updateDBIntent.putExtra(INTENT_EXTRA, moviesContentValues);
-            LocalBroadcastManager.getInstance(this).registerReceiver(
-                    new ResponseReceiver(),
-                    new IntentFilter(UPDATE_DB_BROADCAST));
-            this.startService(updateDBIntent);
+            switch (apiResponse.getResponseCode()) {
+                case 200:
+                    updateDBIntent.putExtra(INTENT_EXTRA, apiResponse.getResponseText());
+                    LocalBroadcastManager.getInstance(this).registerReceiver(new ResponseReceiver(), new IntentFilter(UPDATE_DB_BROADCAST));
+                    this.startService(updateDBIntent);
+                    break;
+                default:
+                    Context context = getApplicationContext();
+                    CharSequence text = apiResponse.getResponseText();
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+            }
         }
     }
 
@@ -75,9 +86,7 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
         @Override
         public void onReceive(Context context, Intent intent) {
             MoviesProvider moviesProvider = new MoviesProvider(getApplicationContext());
-            mMovies = moviesProvider.
-                    query(MovieContract.
-                            MovieEntry.CONTENT_URI, null, null, null, null);
+            mMovies = moviesProvider.query(MovieContract.MovieEntry.CONTENT_URI, null, null, null, null);
             View recyclerView = findViewById(R.id.movie_list);
             assert recyclerView != null;
             setupRecyclerView((RecyclerView) recyclerView);
@@ -115,7 +124,7 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
     }
 
     @Override
-    public void OnTaskComplete(ContentValues[] moviesContentValues) {
-        onTaskComplete(moviesContentValues);
+    public void OnTaskComplete(APIResponse apiResponse) {
+        onTaskComplete(apiResponse);
     }
 }

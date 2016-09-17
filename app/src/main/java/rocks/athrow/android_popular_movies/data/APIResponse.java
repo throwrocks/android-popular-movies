@@ -1,6 +1,7 @@
 package rocks.athrow.android_popular_movies.data;
 
 /**
+ * APIResponse
  * Created by josel on 9/7/2016.
  */
 public final class APIResponse {

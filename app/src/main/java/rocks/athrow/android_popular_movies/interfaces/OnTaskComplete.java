@@ -1,10 +1,10 @@
 package rocks.athrow.android_popular_movies.interfaces;
 
-import android.content.ContentValues;
+import rocks.athrow.android_popular_movies.data.APIResponse;
 
 /**
  * Created by jose on 9/9/16.
  */
 public interface OnTaskComplete {
-    void OnTaskComplete(ContentValues[] moviesContentValues);
+    void OnTaskComplete(APIResponse apiResponses);
 }
