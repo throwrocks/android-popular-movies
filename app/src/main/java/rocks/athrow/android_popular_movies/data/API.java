@@ -19,6 +19,9 @@ public final class API {
     private API() {
         throw new AssertionError("No API instances for you!");
     }
+    private static final String API_TYPE_MOVIES = "movies";
+    private static final String API_TYPE_REVIEWS = "reviews";
+    private static final String API_TYPE_TRAILERS = "trailers";
     private static final String API_KEY = BuildConfig.APIKey;
     private static final String API_KEY_ARG = "&api_key=" + API_KEY;
     private static final String API_DISCOVER_MOVIES_URL = "http://api.themoviedb.org/3/discover/movie?";
@@ -31,7 +34,7 @@ public final class API {
      */
     public static APIResponse getMoviesFromAPI(){
         String movieRequestURL = API_DISCOVER_MOVIES_URL + "popularity" + API_KEY_ARG;
-        return httpConnect(movieRequestURL);
+        return httpConnect(API_TYPE_MOVIES, movieRequestURL);
     }
 
     /**
@@ -41,7 +44,7 @@ public final class API {
      */
     public static APIResponse getMovieReviewsFromAPI(String movieID){
         String movieRequestURL = API_MOVIE_URL + movieID + "/reviews?" + API_KEY_ARG;
-        return httpConnect(movieRequestURL);
+        return httpConnect(API_TYPE_REVIEWS, movieRequestURL);
     }
     /**
      * getMovieReviewsFromAPI
@@ -50,7 +53,7 @@ public final class API {
      */
     public static APIResponse getMovieTrailersFromAPI(String movieID){
         String movieRequestURL = API_MOVIE_URL + movieID + "/videos?" + API_KEY_ARG;
-        return httpConnect(movieRequestURL);
+        return httpConnect(API_TYPE_TRAILERS, movieRequestURL);
     }
     /**
      * callAPIURL
@@ -58,8 +61,8 @@ public final class API {
      * @param movieRequestURL the full moviedb api url
      * @return a string of json data
      */
-    private static APIResponse httpConnect(String movieRequestURL){
-        APIResponse apiResponse = new APIResponse();
+    private static APIResponse httpConnect(String APIType, String movieRequestURL){
+        APIResponse apiResponse = new APIResponse(APIType);
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         try {

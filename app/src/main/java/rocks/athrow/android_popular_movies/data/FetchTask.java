@@ -1,7 +1,8 @@
 package rocks.athrow.android_popular_movies.data;
 
-import android.content.ContentValues;
 import android.os.AsyncTask;
+
+import java.util.ArrayList;
 
 import rocks.athrow.android_popular_movies.interfaces.OnTaskComplete;
 
@@ -11,7 +12,7 @@ import rocks.athrow.android_popular_movies.interfaces.OnTaskComplete;
  * <p/>
  * Created by josel on 8/23/2016.
  */
-public class FetchTask extends AsyncTask<String, Void, APIResponse> {
+public class FetchTask extends AsyncTask<String, Void, ArrayList<APIResponse>> {
     public OnTaskComplete mListener = null;
 
     public FetchTask(OnTaskComplete listener) {
@@ -19,13 +20,15 @@ public class FetchTask extends AsyncTask<String, Void, APIResponse> {
     }
 
     @Override
-    protected APIResponse doInBackground(String... String) {
-        return API.getMoviesFromAPI();
+    protected ArrayList<APIResponse> doInBackground(String... String) {
+        ArrayList<APIResponse> apiResponseArray = new ArrayList<>();
+        apiResponseArray.add(API.getMoviesFromAPI());
+        return apiResponseArray;
     }
 
     @Override
-    protected void onPostExecute(APIResponse apiResponse) {
-        super.onPostExecute(apiResponse);
-        mListener.OnTaskComplete(apiResponse);
+    protected void onPostExecute(ArrayList<APIResponse> apiResponseArray) {
+        super.onPostExecute(apiResponseArray);
+        mListener.OnTaskComplete(apiResponseArray);
     }
 }

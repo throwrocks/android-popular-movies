@@ -6,10 +6,13 @@ package rocks.athrow.android_popular_movies.data;
  */
 public final class APIResponse {
 
+    private String responseType;
     private String responseText;
     private int responseCode;
 
-    APIResponse() {
+    APIResponse(String responseType) {
+        this.responseType = responseType;
+
     }
 
     /**
@@ -30,6 +33,13 @@ public final class APIResponse {
         this.responseText = responseText;
     }
 
+    /**
+     * getResponseType
+     * @return the API's response type (movies, reviews, or trailers)
+     */
+    public String getResponseType() {
+        return responseType;
+    }
     /**
      * getResponseCode
      *

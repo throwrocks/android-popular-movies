@@ -16,7 +16,9 @@ import rocks.athrow.android_popular_movies.data.MoviesProvider;
  * Created by jose on 9/16/16.
  */
 public class UpdateDBService extends IntentService {
-
+    private static final String INTENT_MOVIES = "movies";
+    private static final String INTENT_REVIEWS = "reviews";
+    private static final String INTENT_TRAILERS = "trailers";
     public UpdateDBService() {
         super(MovieListActivity.UPDATE_DB_BROADCAST);
     }
@@ -24,7 +26,7 @@ public class UpdateDBService extends IntentService {
     @Override
     protected void onHandleIntent(Intent workIntent) {
         Bundle arguments = workIntent.getExtras();
-        String moviesJSON = arguments.getString(MovieListActivity.INTENT_EXTRA);
+        String moviesJSON = arguments.getString(INTENT_MOVIES);
         ContentValues[] moviesContentValues;
         if (moviesJSON != null) {
             moviesContentValues = JSONParser.getMoviesFromJSON(moviesJSON);
