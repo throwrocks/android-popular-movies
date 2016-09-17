@@ -1,11 +1,16 @@
 package rocks.athrow.android_popular_movies.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -18,22 +23,15 @@ import rocks.athrow.android_popular_movies.data.FetchTask;
 import rocks.athrow.android_popular_movies.data.MovieContract;
 import rocks.athrow.android_popular_movies.data.MoviesProvider;
 import rocks.athrow.android_popular_movies.interfaces.OnTaskComplete;
+import rocks.athrow.android_popular_movies.service.UpdateDBService;
 import rocks.athrow.android_popular_movies.util.ItemOffsetDecoration;
 
-/**
- * An activity representing a list of Movies. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link MovieDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
-public class MovieListActivity extends AppCompatActivity implements OnTaskComplete{
-
+public class MovieListActivity extends AppCompatActivity implements OnTaskComplete {
+    public static final String INTENT_EXTRA = "movies";
+    public static final String UPDATE_DB_BROADCAST = "rocks.athrow.android_popular_movies.UpdateDB_Broadcast";
     private Cursor mMovies;
     private MovieListAdapter mAdapter;
     private boolean mTwoPane;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,31 +46,64 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
         fetchTask.execute();
     }
 
+    /**
+     * This method handles getting the ContentValues from the FetchTask
+     * And passing them to the UpdateDBService
+     *
+     * @param moviesContentValues the movies returned from the API
+     */
+    public void onTaskComplete(ContentValues[] moviesContentValues) {
+        if (moviesContentValues != null) {
+            Intent updateDBIntent = new Intent(this, UpdateDBService.class);
+            updateDBIntent.putExtra(INTENT_EXTRA, moviesContentValues);
+            LocalBroadcastManager.getInstance(this).registerReceiver(
+                    new ResponseReceiver(),
+                    new IntentFilter(UPDATE_DB_BROADCAST));
+            this.startService(updateDBIntent);
+        }
+    }
+
+    /**
+     * ResponseReceiver
+     * This class is used to manage the response from the UpdateDB Service
+     */
+    private class ResponseReceiver extends BroadcastReceiver {
+
+        private ResponseReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            MoviesProvider moviesProvider = new MoviesProvider(getApplicationContext());
+            mMovies = moviesProvider.
+                    query(MovieContract.
+                            MovieEntry.CONTENT_URI, null, null, null, null);
+            View recyclerView = findViewById(R.id.movie_list);
+            assert recyclerView != null;
+            setupRecyclerView((RecyclerView) recyclerView);
+            int numberOfColumns;
+            if (mTwoPane) {
+                numberOfColumns = 1;
+            } else {
+                numberOfColumns = 2;
+            }
+            ((RecyclerView) recyclerView).setLayoutManager(new GridLayoutManager(getApplicationContext(), numberOfColumns));
+            ItemOffsetDecoration itemDecoration = new ItemOffsetDecoration(getApplicationContext(), R.dimen.item_offset);
+            ((RecyclerView) recyclerView).addItemDecoration(itemDecoration);
+            setupRecyclerView((RecyclerView) recyclerView);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * setupRecyclerView
+     * This method handles setting the adapter to the RecyclerView
+     *
+     * @param recyclerView the movie's list RecyclerView
+     */
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         mAdapter = new MovieListAdapter(this, mTwoPane, mMovies);
         recyclerView.setAdapter(mAdapter);
-    }
-
-    public void onTaskComplete() {
-        MoviesProvider moviesProvider = new MoviesProvider(getApplicationContext());
-        mMovies = moviesProvider.
-                query(MovieContract.
-                        MovieEntry.CONTENT_URI, null, null ,null, null);
-        View recyclerView = findViewById(R.id.movie_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
-        int numberOfColumns;
-        if ( mTwoPane ){
-            numberOfColumns = 1;
-        }else{
-            numberOfColumns = 2;
-        }
-        ((RecyclerView) recyclerView).setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-        ItemOffsetDecoration itemDecoration = new ItemOffsetDecoration(getApplicationContext(), R.dimen.item_offset);
-        ((RecyclerView) recyclerView).addItemDecoration(itemDecoration);
-
-        setupRecyclerView((RecyclerView) recyclerView);
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -84,7 +115,7 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
     }
 
     @Override
-    public void OnTaskComplete() {
-        onTaskComplete();
+    public void OnTaskComplete(ContentValues[] moviesContentValues) {
+        onTaskComplete(moviesContentValues);
     }
 }

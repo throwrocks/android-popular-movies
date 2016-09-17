@@ -18,6 +18,7 @@ import android.util.Log;
  * Created by josel on 8/23/2016.
  */
 public class MoviesProvider extends ContentProvider {
+
     public MoviesProvider() {
     }
 
@@ -131,7 +132,6 @@ public class MoviesProvider extends ContentProvider {
                 null
         );
         trailersCursor.moveToFirst();
-        Log.e(LOG_TAG, "trailersCursor -> " + trailersCursor.getExtras());
         //---------------------------------------------------------
         // The final complete Cursor
         //---------------------------------------------------------
@@ -170,15 +170,10 @@ public class MoviesProvider extends ContentProvider {
         return true;
     }
 
-    /*
-        Students: Here's where you'll code the getType function that uses the UriMatcher.  You can
-        test this by uncommenting testGetType in TestProvider.
-     */
     @Override
     public String getType(@NonNull Uri uri) {
         // Use the Uri Matcher to determine what kind of URI this is.
         final int match = sUriMatcher.match(uri);
-        Log.e(LOG_TAG, "getType -> " + true);
         switch (match) {
             // Student: Uncomment and fill out these two cases
             case MOVIES:
@@ -212,12 +207,10 @@ public class MoviesProvider extends ContentProvider {
                 break;
             }
             case MOVIE_ID: {
-                Log.e(LOG_TAG, "query -> " + uri);
                 retCursor = getMovieByID(uri, projection, sortOrder);
                 break;
             }
             case REVIEWS: {
-                //Log.e(LOG_TAG, "query -> " + "MOVIES");
                 retCursor = db.query(
                         MovieContract.ReviewsEntry.REVIEWS_TABLE_NAME,
                         projection,
@@ -248,9 +241,6 @@ public class MoviesProvider extends ContentProvider {
         return retCursor;
     }
 
-    /*
-        Student: Add the ability to insert Locations to the implementation of this function.
-     */
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();

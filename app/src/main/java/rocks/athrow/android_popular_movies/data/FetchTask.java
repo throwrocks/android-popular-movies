@@ -2,9 +2,11 @@ package rocks.athrow.android_popular_movies.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 
 import rocks.athrow.android_popular_movies.interfaces.OnTaskComplete;
+import rocks.athrow.android_popular_movies.service.UpdateDBService;
 
 /**
  * DataHandler
@@ -12,7 +14,7 @@ import rocks.athrow.android_popular_movies.interfaces.OnTaskComplete;
  * <p/>
  * Created by josel on 8/23/2016.
  */
-public class FetchTask extends AsyncTask {
+public class FetchTask extends AsyncTask<String, Void, ContentValues[]> {
     public OnTaskComplete mListener = null;
     private Context mContext;
 
@@ -22,20 +24,19 @@ public class FetchTask extends AsyncTask {
     }
 
     @Override
-    protected Object doInBackground(Object[] objects) {
+    protected ContentValues[] doInBackground(String... String) {
         APIResponse apiResponse = API.getMoviesFromAPI();
         String moviesResult = apiResponse.getResponseText();
+        ContentValues[] moviesContentValues = null;
         if (moviesResult != null) {
-            ContentValues[] moviesContentValues = JSONParser.getMoviesFromJSON(moviesResult);
-            MoviesProvider moviesProvider = new MoviesProvider(mContext);
-            moviesProvider.bulkInsert(MovieContract.MovieEntry.CONTENT_URI, moviesContentValues);
+            moviesContentValues = JSONParser.getMoviesFromJSON(moviesResult);
         }
-        return null;
+        return moviesContentValues;
     }
 
     @Override
-    protected void onPostExecute(Object o) {
-        super.onPostExecute(o);
-        mListener.OnTaskComplete();
+    protected void onPostExecute(ContentValues[] moviesContentValues) {
+        super.onPostExecute(moviesContentValues);
+        mListener.OnTaskComplete(moviesContentValues);
     }
 }

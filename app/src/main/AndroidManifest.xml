@@ -29,8 +29,10 @@
         <provider
             android:authorities="rocks.athrow.android_popular_movies"
             android:name=".data.MoviesProvider"
-            android:exported="true"
-            />
+            android:exported="false" />
+        <service
+            android:name=".service.UpdateDBService"
+            android:exported="false"/>
     </application>
 
 </manifest>
