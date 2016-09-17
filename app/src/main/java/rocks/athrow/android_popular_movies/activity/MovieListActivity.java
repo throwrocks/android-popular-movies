@@ -1,6 +1,7 @@
 package rocks.athrow.android_popular_movies.activity;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,13 +14,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
 
-import java.util.ArrayList;
-
 import rocks.athrow.android_popular_movies.R;
 import rocks.athrow.android_popular_movies.adapter.MovieListAdapter;
+import rocks.athrow.android_popular_movies.data.API;
 import rocks.athrow.android_popular_movies.data.APIResponse;
 import rocks.athrow.android_popular_movies.data.FetchTask;
 import rocks.athrow.android_popular_movies.data.MovieContract;
@@ -29,6 +30,7 @@ import rocks.athrow.android_popular_movies.service.UpdateDBService;
 import rocks.athrow.android_popular_movies.util.ItemOffsetDecoration;
 
 public class MovieListActivity extends AppCompatActivity implements OnTaskComplete {
+    public static final String INTENT_EXTRA = "movies";
     public static final String UPDATE_DB_BROADCAST = "rocks.athrow.android_popular_movies.UpdateDB_Broadcast";
     private Cursor mMovies;
     private MovieListAdapter mAdapter;
@@ -51,25 +53,24 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
      * This method handles getting the ContentValues from the FetchTask
      * And passing them to the UpdateDBService
      *
-     * @param apiResponseArray the results returned from the API
+     * @param apiResponse the movies returned from the API
      */
-    public void onTaskComplete(ArrayList<APIResponse> apiResponseArray) {
-        if (apiResponseArray != null) {
-            int count = apiResponseArray.size();
-            int i = 0;
+    public void onTaskComplete(APIResponse apiResponse) {
+        if (apiResponse != null) {
             Intent updateDBIntent = new Intent(this, UpdateDBService.class);
-            while (i < count) {
-                APIResponse apiResponse = apiResponseArray.get(i);
-                int apiResponseCode = apiResponse.getResponseCode();
-                if (apiResponseCode == 200) {
-                    String apiResponseType = apiResponse.getResponseType();
-                    updateDBIntent.putExtra(apiResponseType, apiResponse.getResponseText());
-                }
-                i++;
+            switch (apiResponse.getResponseCode()) {
+                case 200:
+                    updateDBIntent.putExtra(INTENT_EXTRA, apiResponse.getResponseText());
+                    LocalBroadcastManager.getInstance(this).registerReceiver(new ResponseReceiver(), new IntentFilter(UPDATE_DB_BROADCAST));
+                    this.startService(updateDBIntent);
+                    break;
+                default:
+                    Context context = getApplicationContext();
+                    CharSequence text = apiResponse.getResponseText();
+                    int duration = Toast.LENGTH_SHORT;
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
             }
-            LocalBroadcastManager.getInstance(this).
-                    registerReceiver(new ResponseReceiver(), new IntentFilter(UPDATE_DB_BROADCAST));
-            this.startService(updateDBIntent);
         }
     }
 
@@ -101,7 +102,6 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
             setupRecyclerView((RecyclerView) recyclerView);
             mAdapter.notifyDataSetChanged();
         }
-
     }
 
     /**
@@ -124,7 +124,7 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
     }
 
     @Override
-    public void OnTaskComplete(ArrayList<APIResponse> apiResponse) {
+    public void OnTaskComplete(APIResponse apiResponse) {
         onTaskComplete(apiResponse);
     }
 }
