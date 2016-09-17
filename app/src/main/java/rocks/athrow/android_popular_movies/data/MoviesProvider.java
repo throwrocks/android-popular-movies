@@ -23,7 +23,7 @@ public class MoviesProvider extends ContentProvider {
 
     public MoviesProvider(Context mContext) {
         this.mContext = mContext;
-        this.mOpenHelper = new MovieDBHelper(mContext);
+        this.mOpenHelper = MovieDBHelper.getInstance(mContext);
     }
 
     private static final String LOG_TAG = "MoviesProvider";
@@ -197,7 +197,7 @@ public class MoviesProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
-        final SQLiteDatabase db = new MovieDBHelper(mContext).getReadableDatabase();
+        final SQLiteDatabase db = MovieDBHelper.getInstance(mContext).getReadableDatabase();
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             case MOVIES: {

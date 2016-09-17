@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,7 +63,9 @@ public class MovieListAdapter
         final String title = mValues.getString(MovieContract.MovieEntry.movie_title_index);
         String releaseDateString = mValues.getString(MovieContract.MovieEntry.movie_poster_release_date_index);
         Date releaseDate = Utilities.getStringAsDate(releaseDateString, DATE_FORMAT_API, null );
-        String releaseYear = Utilities.getDateAsString(releaseDate, DATE_FORMAT_DISPLAY, null);
+        final String releaseYear = Utilities.getDateAsString(releaseDate, DATE_FORMAT_DISPLAY, null);
+        final String overview = mValues.getString(MovieContract.MovieEntry.movie_overview_index);
+        final String voteCount = mValues.getString(MovieContract.MovieEntry.movie_vote_count_index);
         // Set the movie views
         Picasso.with(mContext).load(posterPath).into(holder.mPoster);
         holder.mTitle.setText(title);
@@ -78,6 +78,9 @@ public class MovieListAdapter
                     Bundle arguments = new Bundle();
                     arguments.putInt(MovieDetailFragment.ARG_ID, id);
                     arguments.putString(MovieDetailFragment.ARG_TITLE, title);
+                    arguments.putString(MovieDetailFragment.ARG_RELEASE_YEAR, releaseYear);
+                    arguments.putString(MovieDetailFragment.ARG_OVERVIEW,overview);
+                    arguments.putString(MovieDetailFragment.ARG_VOTE_COUNT, voteCount);
                     MovieDetailFragment fragment = new MovieDetailFragment();
                     fragment.setArguments(arguments);
                     ((Activity)mContext).getFragmentManager().beginTransaction()

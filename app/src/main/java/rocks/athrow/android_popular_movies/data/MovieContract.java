@@ -50,9 +50,11 @@ public class MovieContract {
         public static final String movie_is_favorite = "is_favorite";
         // The index of all the fields
         public static final int movie_id_index = 1;
+        public static final int movie_overview_index = 4;
         public static final int movie_poster_release_date_index = 5;
         public static final int movie_poster_path_index = 6;
         public static final int movie_title_index = 8;
+        public static final int movie_vote_count_index = 10;
 
         public static Uri buildMoviesUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
