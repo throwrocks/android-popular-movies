@@ -16,9 +16,10 @@ import rocks.athrow.android_popular_movies.data.MoviesProvider;
  * Created by jose on 9/16/16.
  */
 public class UpdateDBService extends IntentService {
+    public static final String UPDATE_DB_BROADCAST = "rocks.athrow.android_popular_movies.UpdateDB_Broadcast";
 
     public UpdateDBService() {
-        super(MovieListActivity.UPDATE_DB_BROADCAST);
+        super(UPDATE_DB_BROADCAST);
     }
 
     @Override
@@ -33,7 +34,7 @@ public class UpdateDBService extends IntentService {
                     moviesContentValues = JSONParser.getMoviesFromJSON(JSON);
                     MoviesProvider moviesProvider = new MoviesProvider(getApplicationContext());
                     moviesProvider.bulkInsert(MovieContract.MovieEntry.CONTENT_URI, moviesContentValues);
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(MovieListActivity.UPDATE_DB_BROADCAST));
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(UPDATE_DB_BROADCAST));
                     break;
             }
         }

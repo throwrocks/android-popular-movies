@@ -31,8 +31,7 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
     public static final String INTENT_TYPE = "type";
     public static final String INTENT_TYPE_MOVIES = "movies";
     public static final String INTENT_EXTRA = "JSON";
-    public static final String UPDATE_DB_BROADCAST = "rocks.athrow.android_popular_movies.UpdateDB_Broadcast";
-    private Cursor mMovies;
+   private Cursor mMovies;
     private MovieListAdapter mAdapter;
     private boolean mTwoPane;
 
@@ -62,7 +61,9 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
                 case 200:
                     updateDBIntent.putExtra(INTENT_TYPE, INTENT_TYPE_MOVIES);
                     updateDBIntent.putExtra(INTENT_EXTRA, apiResponse.getResponseText());
-                    LocalBroadcastManager.getInstance(this).registerReceiver(new ResponseReceiver(), new IntentFilter(UPDATE_DB_BROADCAST));
+                    LocalBroadcastManager.getInstance(this).
+                            registerReceiver(new ResponseReceiver(),
+                                    new IntentFilter(UpdateDBService.UPDATE_DB_BROADCAST));
                     this.startService(updateDBIntent);
                     break;
                 default:
