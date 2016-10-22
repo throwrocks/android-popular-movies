@@ -1,7 +1,6 @@
 package rocks.athrow.android_popular_movies.activity;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -20,7 +19,6 @@ import com.facebook.stetho.Stetho;
 
 import rocks.athrow.android_popular_movies.R;
 import rocks.athrow.android_popular_movies.adapter.MovieListAdapter;
-import rocks.athrow.android_popular_movies.data.API;
 import rocks.athrow.android_popular_movies.data.APIResponse;
 import rocks.athrow.android_popular_movies.data.FetchTask;
 import rocks.athrow.android_popular_movies.data.MovieContract;
@@ -30,7 +28,9 @@ import rocks.athrow.android_popular_movies.service.UpdateDBService;
 import rocks.athrow.android_popular_movies.util.ItemOffsetDecoration;
 
 public class MovieListActivity extends AppCompatActivity implements OnTaskComplete {
-    public static final String INTENT_EXTRA = "movies";
+    public static final String INTENT_TYPE = "type";
+    public static final String INTENT_TYPE_MOVIES = "movies";
+    public static final String INTENT_EXTRA = "JSON";
     public static final String UPDATE_DB_BROADCAST = "rocks.athrow.android_popular_movies.UpdateDB_Broadcast";
     private Cursor mMovies;
     private MovieListAdapter mAdapter;
@@ -60,6 +60,7 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
             Intent updateDBIntent = new Intent(this, UpdateDBService.class);
             switch (apiResponse.getResponseCode()) {
                 case 200:
+                    updateDBIntent.putExtra(INTENT_TYPE, INTENT_TYPE_MOVIES);
                     updateDBIntent.putExtra(INTENT_EXTRA, apiResponse.getResponseText());
                     LocalBroadcastManager.getInstance(this).registerReceiver(new ResponseReceiver(), new IntentFilter(UPDATE_DB_BROADCAST));
                     this.startService(updateDBIntent);

@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import rocks.athrow.android_popular_movies.R;
+import rocks.athrow.android_popular_movies.data.MovieContract;
 import rocks.athrow.android_popular_movies.fragment.MovieDetailFragment;
 
 /**
@@ -35,23 +36,14 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         Activity activity = this;
-        final CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+        final CollapsingToolbarLayout toolbarLayout =
+                (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
         toolbarLayout.setTitle(" ");
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -74,7 +66,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
 
         ImageView posterView = (ImageView) findViewById(R.id.detail_poster);
-        String posterPath = arguments.getString(MovieDetailFragment.ARG_POSTER_PATH);
+        String posterPath = arguments.getString(MovieContract.MovieEntry.movie_poster_path);
         Picasso.with(activity).load(posterPath).into(posterView);
 
         if (savedInstanceState == null) {
@@ -84,6 +76,14 @@ public class MovieDetailActivity extends AppCompatActivity {
                     .add(R.id.movie_detail_container, fragment)
                     .commit();
         }
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
     }
 
     @Override

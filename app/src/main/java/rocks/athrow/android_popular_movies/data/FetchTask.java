@@ -1,6 +1,5 @@
 package rocks.athrow.android_popular_movies.data;
 
-import android.content.ContentValues;
 import android.os.AsyncTask;
 
 import rocks.athrow.android_popular_movies.interfaces.OnTaskComplete;

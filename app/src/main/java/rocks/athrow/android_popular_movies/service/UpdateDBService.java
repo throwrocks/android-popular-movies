@@ -24,13 +24,18 @@ public class UpdateDBService extends IntentService {
     @Override
     protected void onHandleIntent(Intent workIntent) {
         Bundle arguments = workIntent.getExtras();
-        String moviesJSON = arguments.getString(MovieListActivity.INTENT_EXTRA);
-        ContentValues[] moviesContentValues;
-        if (moviesJSON != null) {
-            moviesContentValues = JSONParser.getMoviesFromJSON(moviesJSON);
-            MoviesProvider moviesProvider = new MoviesProvider(getApplicationContext());
-            moviesProvider.bulkInsert(MovieContract.MovieEntry.CONTENT_URI, moviesContentValues);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(MovieListActivity.UPDATE_DB_BROADCAST));
+        String intentType = arguments.getString(MovieListActivity.INTENT_TYPE);
+        String JSON = arguments.getString(MovieListActivity.INTENT_EXTRA);
+        if (intentType != null && JSON != null) {
+            switch (intentType) {
+                case MovieListActivity.INTENT_TYPE_MOVIES:
+                    ContentValues[] moviesContentValues;
+                    moviesContentValues = JSONParser.getMoviesFromJSON(JSON);
+                    MoviesProvider moviesProvider = new MoviesProvider(getApplicationContext());
+                    moviesProvider.bulkInsert(MovieContract.MovieEntry.CONTENT_URI, moviesContentValues);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(MovieListActivity.UPDATE_DB_BROADCAST));
+                    break;
+            }
         }
     }
 }

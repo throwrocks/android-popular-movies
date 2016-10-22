@@ -48,6 +48,8 @@ public class MovieContract {
         public static final String movie_vote_average = "vote_average";
         public static final String movie_vote_count = "vote_count";
         public static final String movie_is_favorite = "is_favorite";
+        // Non database fields constants
+        public static final String movie_release_year = "release_year";
         // The index of all the fields
         public static final int movie_id_index = 1;
         public static final int movie_overview_index = 4;

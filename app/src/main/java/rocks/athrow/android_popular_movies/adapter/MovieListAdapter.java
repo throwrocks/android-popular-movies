@@ -75,12 +75,12 @@ public class MovieListAdapter
             @Override
             public void onClick(View v) {
                 Bundle arguments = new Bundle();
-                arguments.putInt(MovieDetailFragment.ARG_ID, id);
-                arguments.putString(MovieDetailFragment.ARG_TITLE, title);
-                arguments.putString(MovieDetailFragment.ARG_RELEASE_YEAR, releaseYear);
-                arguments.putString(MovieDetailFragment.ARG_OVERVIEW,overview);
-                arguments.putString(MovieDetailFragment.ARG_VOTE_COUNT, voteCount);
-                arguments.putString(MovieDetailFragment.ARG_POSTER_PATH, posterPath);
+                arguments.putInt(MovieContract.MovieEntry.movie_id, id);
+                arguments.putString(MovieContract.MovieEntry.movie_title, title);
+                arguments.putString(MovieContract.MovieEntry.movie_release_year, releaseYear);
+                arguments.putString(MovieContract.MovieEntry.movie_overview, overview);
+                arguments.putString(MovieContract.MovieEntry.movie_vote_count, voteCount);
+                arguments.putString(MovieContract.MovieEntry.movie_poster_path, posterPath);
                 if (mTwoPane) {
                     MovieDetailFragment fragment = new MovieDetailFragment();
                     fragment.setArguments(arguments);
