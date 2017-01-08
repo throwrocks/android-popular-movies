@@ -31,7 +31,8 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
     public static final String INTENT_TYPE = "type";
     public static final String INTENT_TYPE_MOVIES = "movies";
     public static final String INTENT_EXTRA = "JSON";
-   private Cursor mMovies;
+    private static final String GET_MOVIES = "getMovies";
+    private Cursor mMovies;
     private MovieListAdapter mAdapter;
     private boolean mTwoPane;
 
@@ -44,7 +45,7 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
         OnTaskComplete onTaskCompleted = this;
-        FetchTask fetchTask = new FetchTask(onTaskCompleted);
+        FetchTask fetchTask = new FetchTask(GET_MOVIES, null, onTaskCompleted);
         fetchTask.execute();
     }
 

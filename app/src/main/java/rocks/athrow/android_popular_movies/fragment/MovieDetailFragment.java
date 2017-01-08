@@ -1,17 +1,12 @@
 package rocks.athrow.android_popular_movies.fragment;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import rocks.athrow.android_popular_movies.activity.MovieDetailActivity;
 import rocks.athrow.android_popular_movies.activity.MovieListActivity;
@@ -20,7 +15,6 @@ import rocks.athrow.android_popular_movies.data.APIResponse;
 import rocks.athrow.android_popular_movies.data.FetchTask;
 import rocks.athrow.android_popular_movies.data.MovieContract;
 import rocks.athrow.android_popular_movies.interfaces.OnTaskComplete;
-import rocks.athrow.android_popular_movies.service.UpdateDBService;
 
 /**
  * A fragment representing a single Movie detail screen.
@@ -30,6 +24,7 @@ import rocks.athrow.android_popular_movies.service.UpdateDBService;
  */
 public class MovieDetailFragment extends Fragment implements OnTaskComplete {
     private String mMovieId;
+    private final String GET_REVIEWS = "getReviews";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -42,9 +37,9 @@ public class MovieDetailFragment extends Fragment implements OnTaskComplete {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
-        mMovieId = arguments.getString(MovieContract.MovieEntry.movie_id);
+        mMovieId = Integer.toString(arguments.getInt(MovieContract.MovieEntry.movie_id));
         OnTaskComplete onTaskCompleted = this;
-        FetchTask fetchTask = new FetchTask(onTaskCompleted);
+        FetchTask fetchTask = new FetchTask(GET_REVIEWS, mMovieId, onTaskCompleted);
         fetchTask.execute();
     }
 
@@ -64,9 +59,12 @@ public class MovieDetailFragment extends Fragment implements OnTaskComplete {
         ratingBar.setRating(Float.parseFloat(voteCount));
         return rootView;
     }
-    public void onTaskComplete(APIResponse apiResponse) {
 
+    public void onTaskComplete(APIResponse apiResponse) {
+        int responseCode = apiResponse.getResponseCode();
+        String responseText = apiResponse.getResponseText();
     }
+
     @Override
     public void OnTaskComplete(APIResponse apiResponse) {
         onTaskComplete(apiResponse);

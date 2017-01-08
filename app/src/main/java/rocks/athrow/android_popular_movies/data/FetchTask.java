@@ -11,15 +11,27 @@ import rocks.athrow.android_popular_movies.interfaces.OnTaskComplete;
  * Created by josel on 8/23/2016.
  */
 public class FetchTask extends AsyncTask<String, Void, APIResponse> {
-    public OnTaskComplete mListener = null;
+    private String mType;
+    private String mMovieId;
+    private OnTaskComplete mListener = null;
 
-    public FetchTask(OnTaskComplete listener) {
+    public FetchTask(String type, String movieId, OnTaskComplete listener) {
+        this.mType = type;
+        this.mMovieId = movieId;
         this.mListener = listener;
     }
 
     @Override
     protected APIResponse doInBackground(String... String) {
-        return API.getMoviesFromAPI();
+        APIResponse apiResponse = new APIResponse();
+        switch (mType) {
+            case "getMovies":
+                apiResponse = API.getMoviesFromAPI();
+                break;
+            case "getReviews":
+                apiResponse = API.getMovieReviewsFromAPI(mMovieId);
+        }
+        return apiResponse;
     }
 
     @Override
