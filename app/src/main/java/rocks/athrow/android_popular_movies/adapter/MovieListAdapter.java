@@ -31,9 +31,9 @@ public class MovieListAdapter
     private static final String DATE_FORMAT_API = "yyyy-MM-dd";
     private static final String DATE_FORMAT_DISPLAY = "yyyy";
     private static final String POSTER_URL = "http://image.tmdb.org/t/p/w500";
-    private Context mContext;
-    private Boolean mTwoPane;
-    private Cursor mValues;
+    private final Context mContext;
+    private final Boolean mTwoPane;
+    private final Cursor mValues;
 
     /**
      * MovieListAdapter
@@ -102,13 +102,13 @@ public class MovieListAdapter
         return mValues.getCount();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final ImageView mPoster;
-        public final TextView mTitle;
-        public final TextView mYear;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        final View mView;
+        final ImageView mPoster;
+        final TextView mTitle;
+        final TextView mYear;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
             mPoster = (ImageView) view.findViewById(R.id.movie_poster);

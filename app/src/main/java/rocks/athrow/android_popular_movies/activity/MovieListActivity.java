@@ -29,8 +29,8 @@ import rocks.athrow.android_popular_movies.util.ItemOffsetDecoration;
 
 public class MovieListActivity extends AppCompatActivity implements OnTaskComplete {
     public static final String INTENT_TYPE = "type";
-    public static final String INTENT_TYPE_MOVIES = "movies";
     public static final String INTENT_EXTRA = "JSON";
+    public static final String INTENT_TYPE_MOVIES = "movies";
     private static final String GET_MOVIES = "getMovies";
     private Cursor mMovies;
     private MovieListAdapter mAdapter;
