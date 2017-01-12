@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,13 +21,14 @@ import android.widget.Toast;
 import rocks.athrow.android_popular_movies.activity.MovieDetailActivity;
 import rocks.athrow.android_popular_movies.activity.MovieListActivity;
 import rocks.athrow.android_popular_movies.R;
+import rocks.athrow.android_popular_movies.adapter.MovieListAdapter;
+import rocks.athrow.android_popular_movies.adapter.ReviewListAdapter;
 import rocks.athrow.android_popular_movies.data.APIResponse;
 import rocks.athrow.android_popular_movies.data.FetchTask;
 import rocks.athrow.android_popular_movies.data.MovieContract;
 import rocks.athrow.android_popular_movies.data.MoviesProvider;
 import rocks.athrow.android_popular_movies.interfaces.OnTaskComplete;
 import rocks.athrow.android_popular_movies.service.UpdateDBService;
-import rocks.athrow.android_popular_movies.util.ItemOffsetDecoration;
 
 /**
  * A fragment representing a single Movie detail screen.
@@ -38,10 +40,11 @@ public class MovieDetailFragment extends Fragment implements OnTaskComplete {
     public static final String INTENT_TYPE = "type";
     public static final String INTENT_EXTRA = "JSON";
     public static final String INTENT_TYPE_REVIEWS = "reviews";
+    private final String GET_REVIEWS = "getReviews";
+    private ReviewListAdapter mAdapter;
     private Cursor mReviews;
     private String mMovieId;
-    View rootView;
-    private final String GET_REVIEWS = "getReviews";
+    private View rootView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -56,6 +59,7 @@ public class MovieDetailFragment extends Fragment implements OnTaskComplete {
         Bundle arguments = getArguments();
         mMovieId = Integer.toString(arguments.getInt(MovieContract.MovieEntry.movie_id));
         OnTaskComplete onTaskCompleted = this;
+        // TODO: Query the database for reviews, because if they are in the database we can display while we fetch any new ones
         FetchTask fetchTask = new FetchTask(GET_REVIEWS, mMovieId, onTaskCompleted);
         fetchTask.execute();
     }
@@ -111,15 +115,19 @@ public class MovieDetailFragment extends Fragment implements OnTaskComplete {
         @Override
         public void onReceive(Context context, Intent intent) {
             MoviesProvider moviesProvider = new MoviesProvider(context);
-            mReviews = moviesProvider.query(MovieContract.ReviewsEntry.CONTENT_URI, null, null, null, null);
-            View recyclerView = rootView.findViewById(R.id.detail_reviews_list);
+            mReviews =
+                    moviesProvider.query(
+                            MovieContract.ReviewsEntry.CONTENT_URI,
+                            null,
+                            MovieContract.ReviewsEntry.review_movie_id + "=?",
+                            new String[]{mMovieId},
+                            null
+                    );
+            RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.detail_reviews_list);
             assert recyclerView != null;
-            //setupRecyclerView((RecyclerView) recyclerView);
-            //((RecyclerView) recyclerView).setLayoutManager(new GridLayoutManager(getApplicationContext(), numberOfColumns));
-            //ItemOffsetDecoration itemDecoration = new ItemOffsetDecoration(getApplicationContext(), R.dimen.item_offset);
-            //((RecyclerView) recyclerView).addItemDecoration(itemDecoration);
-            //setupRecyclerView((RecyclerView) recyclerView);
-            //mAdapter.notifyDataSetChanged();
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            mAdapter = new ReviewListAdapter(mReviews);
+            recyclerView.setAdapter(mAdapter);
         }
     }
 

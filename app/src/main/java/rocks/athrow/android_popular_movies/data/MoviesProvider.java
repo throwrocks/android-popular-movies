@@ -356,6 +356,7 @@ public class MoviesProvider extends ContentProvider {
                 }
                 mContext.getContentResolver().notifyChange(uri, null);
                 return returnCount;
+            // TODO: Create bulkinsert for reviews
             default:
                 return super.bulkInsert(uri, values);
         }

@@ -95,6 +95,11 @@ public class MovieContract {
         public static final String review_author = "author";
         public static final String review_content = "content";
         public static final String review_url = "url";
+        // The index of all the fields
+        public static final int review_id_index = 1;
+        public static final int review_movie_id_index = 2;
+        public static final int review_author_index = 3;
+        public static final int review_content_index = 4;
 
         public static Uri buildReviewsURI(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
