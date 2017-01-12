@@ -335,7 +335,7 @@ public class MoviesProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case MOVIES:
-                int returnCount = 0;
+                int moviesCount = 0;
                 for (ContentValues value : values) {
                     try {
                         int id = value.getAsInteger("id");
@@ -346,7 +346,7 @@ public class MoviesProvider extends ContentProvider {
                             Uri insertResult = insert(MovieContract.MovieEntry.CONTENT_URI, value);
                             long _id = Long.parseLong(MovieContract.MovieEntry.getMovieIDFromUI(insertResult));
                             if (_id != -1) {
-                                returnCount++;
+                                moviesCount++;
                             }
                             cursor.close();
                         }
@@ -355,8 +355,30 @@ public class MoviesProvider extends ContentProvider {
                     }
                 }
                 mContext.getContentResolver().notifyChange(uri, null);
-                return returnCount;
+                return moviesCount;
             // TODO: Create bulkinsert for reviews
+            case REVIEWS:
+                int reviewsCount = 0;
+                for (ContentValues value : values) {
+                    try {
+                        String id = value.getAsString("id");
+                        String selection = MovieContract.ReviewsEntry.review_id + " = ? ";
+                        String[] selectionArgs = new String[]{id};
+                        Cursor cursor = query(uri, null, selection, selectionArgs, null);
+                        if (cursor != null && cursor.getCount() == 0) {
+                            Uri insertResult = insert(MovieContract.ReviewsEntry.CONTENT_URI, value);
+                            long _id = Long.parseLong(MovieContract.ReviewsEntry.getReviewsIDFromUri(insertResult));
+                            if (_id != -1) {
+                                reviewsCount++;
+                            }
+                            cursor.close();
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e.toString());
+                    }
+                }
+                mContext.getContentResolver().notifyChange(uri, null);
+                return reviewsCount;
             default:
                 return super.bulkInsert(uri, values);
         }

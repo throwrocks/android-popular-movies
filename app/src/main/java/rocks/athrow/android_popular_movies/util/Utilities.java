@@ -55,4 +55,10 @@ public final class Utilities {
         return date;
     }
 
+    public static String truncateString(String str, int number) {
+        if (str.length() > number) {
+            str = str.substring(0, number) + "...";
+        }
+        return str;
+    }
 }

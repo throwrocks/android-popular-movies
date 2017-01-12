@@ -17,10 +17,11 @@ import rocks.athrow.android_popular_movies.fragment.MovieDetailFragment;
  * Created by jose on 9/16/16.
  */
 public class UpdateDBService extends IntentService {
-    public static final String UPDATE_DB_BROADCAST = "rocks.athrow.android_popular_movies.UpdateDB_Broadcast";
-
+    private static final String SERVICE_NAME = "UpdateDBService";
+    public static final String UPDATE_MOVIES_DB_SERVICE_BROADCAST = "UpdateMoviesBroadcast";
+    public static final String UPDATE_REVIEWS_DB_SERVICE_BROADCAST = "UpdateReviewsBroadcast";
     public UpdateDBService() {
-        super(UPDATE_DB_BROADCAST);
+        super(SERVICE_NAME);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class UpdateDBService extends IntentService {
                     ContentValues[] moviesContentValues;
                     moviesContentValues = JSONParser.getMoviesFromJSON(JSON);
                     moviesProvider.bulkInsert(MovieContract.MovieEntry.CONTENT_URI, moviesContentValues);
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(UPDATE_DB_BROADCAST));
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(UPDATE_MOVIES_DB_SERVICE_BROADCAST));
                     break;
                 case MovieDetailFragment.INTENT_TYPE_REVIEWS:
                     int movieId = arguments.getInt("movie_id");
@@ -48,7 +49,7 @@ public class UpdateDBService extends IntentService {
                        i ++;
                     }
                     moviesProvider.bulkInsert(MovieContract.ReviewsEntry.CONTENT_URI, reviewsContentValues);
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(UPDATE_DB_BROADCAST));
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(UPDATE_REVIEWS_DB_SERVICE_BROADCAST));
 
             }
         }

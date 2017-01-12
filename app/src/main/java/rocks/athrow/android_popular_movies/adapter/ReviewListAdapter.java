@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import rocks.athrow.android_popular_movies.R;
 import rocks.athrow.android_popular_movies.data.MovieContract;
+import rocks.athrow.android_popular_movies.util.Utilities;
 
 /**
  * Created by jose on 1/11/17.
@@ -33,8 +34,9 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
         mValues.moveToPosition(position);
         final String author = mValues.getString(MovieContract.ReviewsEntry.review_author_index);
         final String content = mValues.getString(MovieContract.ReviewsEntry.review_content_index);
+        final String contentShort = Utilities.truncateString(content, 300);
         holder.mAuthor.setText(author);
-        holder.mReview.setText(content);
+        holder.mReview.setText(contentShort);
     }
 
     @Override

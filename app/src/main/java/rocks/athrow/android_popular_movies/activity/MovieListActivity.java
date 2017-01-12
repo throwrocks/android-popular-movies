@@ -35,6 +35,7 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
     private Cursor mMovies;
     private MovieListAdapter mAdapter;
     private boolean mTwoPane;
+    ItemOffsetDecoration mItemDecoration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
                     updateDBIntent.putExtra(INTENT_EXTRA, apiResponse.getResponseText());
                     LocalBroadcastManager.getInstance(this).
                             registerReceiver(new ResponseReceiver(),
-                                    new IntentFilter(UpdateDBService.UPDATE_DB_BROADCAST));
+                                    new IntentFilter(UpdateDBService.UPDATE_MOVIES_DB_SERVICE_BROADCAST));
                     this.startService(updateDBIntent);
                     break;
                 default:
@@ -100,9 +101,10 @@ public class MovieListActivity extends AppCompatActivity implements OnTaskComple
                 numberOfColumns = 2;
             }
             ((RecyclerView) recyclerView).setLayoutManager(new GridLayoutManager(getApplicationContext(), numberOfColumns));
-            ItemOffsetDecoration itemDecoration = new ItemOffsetDecoration(getApplicationContext(), R.dimen.item_offset);
-            ((RecyclerView) recyclerView).addItemDecoration(itemDecoration);
-            setupRecyclerView((RecyclerView) recyclerView);
+            if (mItemDecoration == null) {
+                mItemDecoration = new ItemOffsetDecoration(getApplicationContext(), R.dimen.item_offset);
+                ((RecyclerView) recyclerView).addItemDecoration(mItemDecoration);
+            }
             mAdapter.notifyDataSetChanged();
         }
     }

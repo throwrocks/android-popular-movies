@@ -16,7 +16,7 @@
         android:id="@+id/movie_list"
         android:name="rocks.athrow.android_popular_movies.MovieListFragment"
         android:layout_width="@dimen/item_width"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="8dp"
         app:layoutManager="GridLayoutManager"
         tools:context=".activity.MovieListActivity"

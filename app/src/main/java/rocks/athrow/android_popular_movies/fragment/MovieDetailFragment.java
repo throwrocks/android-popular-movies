@@ -21,7 +21,6 @@ import android.widget.Toast;
 import rocks.athrow.android_popular_movies.activity.MovieDetailActivity;
 import rocks.athrow.android_popular_movies.activity.MovieListActivity;
 import rocks.athrow.android_popular_movies.R;
-import rocks.athrow.android_popular_movies.adapter.MovieListAdapter;
 import rocks.athrow.android_popular_movies.adapter.ReviewListAdapter;
 import rocks.athrow.android_popular_movies.data.APIResponse;
 import rocks.athrow.android_popular_movies.data.FetchTask;
@@ -91,7 +90,7 @@ public class MovieDetailFragment extends Fragment implements OnTaskComplete {
                     updateDBIntent.putExtra(INTENT_EXTRA, apiResponse.getResponseText());
                     LocalBroadcastManager.getInstance(getActivity()).
                             registerReceiver(new MovieDetailFragment.ResponseReceiver(),
-                                    new IntentFilter(UpdateDBService.UPDATE_DB_BROADCAST));
+                                    new IntentFilter(UpdateDBService.UPDATE_REVIEWS_DB_SERVICE_BROADCAST));
                     getActivity().startService(updateDBIntent);
                     break;
                 default:
@@ -123,11 +122,19 @@ public class MovieDetailFragment extends Fragment implements OnTaskComplete {
                             new String[]{mMovieId},
                             null
                     );
+            TextView reviewsHeader = (TextView) rootView.findViewById(R.id.detail_reviews_header);
             RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.detail_reviews_list);
-            assert recyclerView != null;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            mAdapter = new ReviewListAdapter(mReviews);
-            recyclerView.setAdapter(mAdapter);
+            if ( mReviews != null && mReviews.getCount() == 0){
+                reviewsHeader.setVisibility(View.GONE);
+                assert recyclerView != null;
+                recyclerView.setVisibility(View.GONE);
+            }else{
+                reviewsHeader.setVisibility(View.VISIBLE);
+                assert recyclerView != null;
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                mAdapter = new ReviewListAdapter(mReviews);
+                recyclerView.setAdapter(mAdapter);
+            }
         }
     }
 
